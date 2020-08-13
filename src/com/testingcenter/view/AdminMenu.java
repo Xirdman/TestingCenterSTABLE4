@@ -5,7 +5,6 @@ import com.testingcenter.model.Admin;
 import com.testingcenter.model.User;
 
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * View class for admin menu

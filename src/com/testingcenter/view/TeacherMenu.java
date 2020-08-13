@@ -14,7 +14,7 @@ import java.util.Scanner;
  *
  * @author Matveev Alexander
  */
-public class TeacherMenu {
+public class TeacherMenu extends UserMenu {
     /**
      * First screen menu of teacher after log in
      *
@@ -86,8 +86,8 @@ public class TeacherMenu {
     private static void printGroupRatingDesc(int groupId) {
         System.out.println(groupId + " raitings are:");
         List<Student> students = new GroupController().getGroupRatings(groupId);
-        for(Student student: students){
-            System.out.println(student.getFirstName()+" have rating " + student.getRating());
+        for (Student student : students) {
+            System.out.println(student.getFirstName() + " have rating " + student.getRating());
         }
         System.out.println();
     }

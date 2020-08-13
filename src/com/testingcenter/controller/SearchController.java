@@ -1,14 +1,17 @@
 package com.testingcenter.controller;
 
-import com.testingcenter.model.Student;
-import com.testingcenter.model.Test;
-import com.testingcenter.model.User;
+import com.testingcenter.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class SearchController {
+    enum Users{
+        ADMIN,
+        TEACHER,
+        STUDENT
+    }
     public List<Test> searchTestsByName(String textInName) {
         List<Test> tests = Repository.getTests();
         return tests.stream().filter(e -> e.getName().contains(textInName)).collect(Collectors.toList());
@@ -35,8 +38,8 @@ public class SearchController {
     }
 
     public List<Student> searchByStudentFirstName(String studentFirstName) {
-        List<User> students = Repository.getUsers();
-        return students.stream()
+        List<User> users = Repository.getUsers();
+        return users.stream()
                 .filter(e -> e instanceof Student)
                 .filter(e -> e.getFirstName().equals(studentFirstName))
                 .map(s->(Student)s)
@@ -44,12 +47,54 @@ public class SearchController {
 
     }
     public List<Student> searchByStudentLastName(String studentLastName) {
-        List<User> students = Repository.getUsers();
-        return students.stream()
+        List<User> users = Repository.getUsers();
+        return users.stream()
                 .filter(e -> e instanceof Student)
                 .filter(e -> e.getLastName().equals(studentLastName))
                 .map(s->(Student)s)
                 .collect(Collectors.toList());
 
+    }
+    public List<Admin> searchByAdminFirstName(String adminFirstName) {
+        List<User> users = Repository.getUsers();
+        return users.stream()
+                .filter(e -> e instanceof Admin)
+                .filter(e -> e.getFirstName().equals(adminFirstName))
+                .map(s->(Admin)s)
+                .collect(Collectors.toList());
+
+    }
+    public List<Admin> searchByAdminLastName(String adminLastName) {
+        List<User> users = Repository.getUsers();
+        return users.stream()
+                .filter(e -> e instanceof Admin)
+                .filter(e -> e.getLastName().equals(adminLastName))
+                .map(s->(Admin)s)
+                .collect(Collectors.toList());
+
+    }
+    public List<Teacher> searchByTeacherFirstName(String teacherFirstName) {
+        List<User> users = Repository.getUsers();
+        return users.stream()
+                .filter(e -> e instanceof Teacher)
+                .filter(e -> e.getFirstName().equals(teacherFirstName))
+                .map(s->(Teacher)s)
+                .collect(Collectors.toList());
+
+    }
+    public List<Teacher> searchByTeacherLastName(String teacherLastName) {
+        List<User> users = Repository.getUsers();
+        return users.stream()
+                .filter(e -> e instanceof Teacher)
+                .filter(e -> e.getLastName().equals(teacherLastName))
+                .map(s->(Teacher)s)
+                .collect(Collectors.toList());
+
+    }
+    public List<TestQuestion> searchTestQuestionsByWordInText(String searchedWord){
+        List<TestQuestion> questions = Repository.getQuestions();
+        return questions.stream()
+                .filter(e-> e.getQuestionText().contains(searchedWord))
+                .collect(Collectors.toList());
     }
 }

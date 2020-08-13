@@ -16,7 +16,7 @@ import java.util.Scanner;
  *
  * @author Matveev Alexander
  */
-public class StudentMenu {
+public class StudentMenu extends UserMenu{
 
     /**
      * First Screen of student menu after log in

@@ -2,14 +2,15 @@ package com.testingcenter.view;
 
 import com.testingcenter.Main;
 import com.testingcenter.controller.SearchController;
-import com.testingcenter.model.Student;
-import com.testingcenter.model.Test;
-import com.testingcenter.model.User;
+import com.testingcenter.controller.TestQuestionController;
+import com.testingcenter.model.*;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Scanner;
 
 public class UserMenu {
+
     void logOut() {
         Main.showWelcomeScreen();
     }
@@ -39,8 +40,10 @@ public class UserMenu {
                 printSearchInTests(user);
                 break;
             case 2:
+                printSearchInUsers(user);
                 break;
             case 3:
+                printSearchInQuestions(user);
                 break;
             case 4:
                 break;
@@ -63,7 +66,7 @@ public class UserMenu {
         System.out.print("2 - Search by number of questions \n");
         System.out.print("3 - Search by test teacher \n");
         System.out.print("4 - Search in test questions \n");
-        System.out.print("5 - Go to previous menu \n");
+        System.out.print("5 - Back to previous menu\n");
         System.out.print("6 - Log out \n");
         System.out.print("7 - Exit \n");
         int i = 0;
@@ -169,7 +172,7 @@ public class UserMenu {
         System.out.print("Choose option you want to do \n");
         System.out.print("1 - Search by teacher first name \n");
         System.out.print("2 - Search by teacher last name \n");
-        System.out.print("3 - Go to previous menu \n");
+        System.out.print("3 - Back to previous menu\n");
         System.out.print("4 - Log out \n");
         System.out.print("5 - Exit \n");
         int i = 0;
@@ -181,10 +184,10 @@ public class UserMenu {
         }
         switch (i) {
             case 1:
-                searchByTeacherFirstName();
+                searchTestsByTeacherFirstName();
                 break;
             case 2:
-                searchByTeacherLastName();
+                searchTestsByTeacherLastName();
                 break;
             case 3:
                 printSearchInTests(user);
@@ -201,7 +204,7 @@ public class UserMenu {
         }
     }
 
-    private void searchByTeacherFirstName() {
+    private void searchTestsByTeacherFirstName() {
         System.out.print("Enter teacher first name:");
         String teacherName;
         try {
@@ -215,7 +218,7 @@ public class UserMenu {
         }
     }
 
-    private void searchByTeacherLastName() {
+    private void searchTestsByTeacherLastName() {
         System.out.print("Enter teacher last name:");
         String teacherName;
         try {
@@ -231,6 +234,46 @@ public class UserMenu {
 
     private void searchByWordInTestQuestion() {
         System.out.println("Add realisation");
+    }
+
+    private void printSearchInUsers(User user) {
+        System.out.print("Choose option you want to do \n");
+        System.out.print("1 - Search in students \n");
+        System.out.print("2 - Search in admins \n");
+        System.out.print("3 - Search in teachers \n");
+        System.out.print("4 - Go to previous menu \n");
+        System.out.print("5 - Log out \n");
+        System.out.print("6 - Exit \n");
+        int i = 0;
+        try {
+            i = getIntFromKeyboard();
+            System.out.print("\n");
+        } catch (Exception e) {
+            System.out.print("Waiting to choose an option from 1 to 6 \n");
+        }
+        switch (i) {
+            case 1:
+                printSearchInStudents(user);
+                break;
+            case 2:
+                printSearchInAdmins(user);
+                break;
+            case 3:
+                printSearchInTeachers(user);
+                break;
+            case 4:
+                printSearchMenu(user);
+                break;
+            case 5:
+                logOut();
+                break;
+            case 6:
+                exit();
+                break;
+            default:
+                System.out.print("Waiting to choose an option from 1 to 6 \n");
+                printSearchInUsers(user);
+        }
     }
 
     private void printSearchInStudents(User user) {
@@ -255,7 +298,7 @@ public class UserMenu {
                 searchByStudentLastName();
                 break;
             case 3:
-                printSearchMenu(user);
+                printSearchInUsers(user);
                 break;
             case 4:
                 logOut();
@@ -264,7 +307,7 @@ public class UserMenu {
                 exit();
                 break;
             default:
-                System.out.print("Waiting to choose an option from 1 to 8 \n");
+                System.out.print("Waiting to choose an option from 1 to 5 \n");
                 printSearchInStudents(user);
         }
     }
@@ -305,10 +348,237 @@ public class UserMenu {
         try {
             studentLastName = getStringFromKeyboard();
             SearchController searchController = new SearchController();
-            printStudentsSearchResult(studentLastName, searchController.searchByStudentFirstName(studentLastName));
+            printStudentsSearchResult(studentLastName, searchController.searchByStudentLastName(studentLastName));
         } catch (Exception e) {
             System.out.print("Invalid input");
             searchByTeacherFirstName();
+        }
+    }
+
+    private void printSearchInAdmins(User user) {
+        System.out.print("Choose option you want to do \n");
+        System.out.print("1 - Search by Admin first name \n");
+        System.out.print("2 - Search by Admin last name \n");
+        System.out.print("3 - Go to previous menu \n");
+        System.out.print("4 - Log out \n");
+        System.out.print("5 - Exit \n");
+        int i = 0;
+        try {
+            i = getIntFromKeyboard();
+            System.out.print("\n");
+        } catch (Exception e) {
+            System.out.print("Waiting to choose an option from 1 to 5 \n");
+        }
+        switch (i) {
+            case 1:
+                searchByAdminFirstName();
+                break;
+            case 2:
+                searchByAdminLastName();
+                break;
+            case 3:
+                printSearchInUsers(user);
+                break;
+            case 4:
+                logOut();
+                break;
+            case 5:
+                exit();
+                break;
+            default:
+                System.out.print("Waiting to choose an option from 1 to 5 \n");
+                printSearchInStudents(user);
+        }
+    }
+
+    private void searchByAdminFirstName() {
+        System.out.print("Enter admin first name:");
+        String adminFirstName;
+        try {
+            adminFirstName = getStringFromKeyboard();
+            SearchController searchController = new SearchController();
+            printAdminSearchResult(adminFirstName, searchController.searchByAdminFirstName(adminFirstName));
+        } catch (Exception e) {
+            System.out.print("Invalid input");
+            searchByTeacherFirstName();
+        }
+    }
+
+    private void printAdminSearchResult(String searchedWord, Collection<Admin> admins) {
+        if (admins.isEmpty())
+            System.out.println("Admin with " + searchedWord + " not found");
+        else {
+            System.out.println("Admins found:");
+            printAdminsCollection(admins);
+        }
+    }
+
+    private void printAdminsCollection(Collection<Admin> admins) {
+        for (Admin admin : admins)
+            System.out.println(admin.getFirstName() + " " + admin.getLastName());
+    }
+
+    private void searchByAdminLastName() {
+        System.out.print("Enter admin last name:");
+        String adminLastName;
+        try {
+            adminLastName = getStringFromKeyboard();
+            SearchController searchController = new SearchController();
+            printAdminSearchResult(adminLastName, searchController.searchByAdminLastName(adminLastName));
+        } catch (Exception e) {
+            System.out.print("Invalid input");
+            searchByTeacherFirstName();
+        }
+    }
+
+    private void printSearchInTeachers(User user) {
+        System.out.print("Choose option you want to do \n");
+        System.out.print("1 - Search by teacher first name \n");
+        System.out.print("2 - Search by teacher last name \n");
+        System.out.print("3 - Go to previous menu \n");
+        System.out.print("4 - Log out \n");
+        System.out.print("5 - Exit \n");
+        int i = 0;
+        try {
+            i = getIntFromKeyboard();
+            System.out.print("\n");
+        } catch (Exception e) {
+            System.out.print("Waiting to choose an option from 1 to 5 \n");
+        }
+        switch (i) {
+            case 1:
+                searchByTeacherFirstName();
+                break;
+            case 2:
+                searchByTeacherLastName();
+                break;
+            case 3:
+                printSearchInUsers(user);
+                break;
+            case 4:
+                logOut();
+                break;
+            case 5:
+                exit();
+                break;
+            default:
+                System.out.print("Waiting to choose an option from 1 to 5 \n");
+                printSearchInStudents(user);
+        }
+    }
+
+    private void searchByTeacherFirstName() {
+        System.out.print("Enter teacher first name:");
+        String teacherFirstName;
+        try {
+            teacherFirstName = getStringFromKeyboard();
+            SearchController searchController = new SearchController();
+            printTeacherSearchResult(teacherFirstName, searchController.searchByTeacherFirstName(teacherFirstName));
+        } catch (Exception e) {
+            System.out.print("Invalid input");
+            searchByTeacherFirstName();
+        }
+    }
+
+    private void printTeacherSearchResult(String searchedWord, Collection<Teacher> teachers) {
+        if (teachers.isEmpty())
+            System.out.println("Admin with " + searchedWord + " not found");
+        else {
+            System.out.println("Admins found:");
+            printTeacherCollection(teachers);
+        }
+    }
+
+    private void printTeacherCollection(Collection<Teacher> teachers) {
+        for (Teacher teacher : teachers)
+            System.out.println("Teacher - " + teacher.getFirstName() + " " + teacher.getLastName());
+    }
+
+    private void searchByTeacherLastName() {
+        System.out.print("Enter teacher last name:");
+        String teacherLastName;
+        try {
+            teacherLastName = getStringFromKeyboard();
+            SearchController searchController = new SearchController();
+            printTeacherSearchResult(teacherLastName, searchController.searchByTeacherLastName(teacherLastName));
+        } catch (Exception e) {
+            System.out.print("Invalid input");
+            searchByTeacherFirstName();
+        }
+    }
+
+    private void printSearchInQuestions(User user) {
+        System.out.print("Choose option you want to do \n");
+        System.out.print("1 - Search in question text \n");
+        System.out.print("2 - Search in question answers \n");
+        System.out.print("3 - Go to previous menu \n");
+        System.out.print("4 - Log out \n");
+        System.out.print("5 - Exit \n");
+        int i = 0;
+        try {
+            i = getIntFromKeyboard();
+            System.out.print("\n");
+        } catch (Exception e) {
+            System.out.print("Waiting to choose an option from 1 to 5 \n");
+        }
+        switch (i) {
+            case 1:
+                printSearchInTestQuestionText();
+                break;
+            case 2:
+                printSearchInTestQuestionAnswerText();
+                break;
+            case 3:
+                printSearchMenu(user);
+                break;
+            case 4:
+                logOut();
+                break;
+            case 5:
+                exit();
+                break;
+            default:
+                System.out.print("Waiting to choose an option from 1 to 5 \n");
+                printSearchInQuestions(user);
+        }
+    }
+
+    private void printSearchInTestQuestionText() {
+        System.out.print("Enter searched word:");
+        try {
+            String searchedWord = getStringFromKeyboard();
+            printQuestionsSearchResult(searchedWord, new SearchController().searchTestQuestionsByWordInText(searchedWord));
+        } catch (Exception e) {
+            System.out.print("Exception:\n "+ e.getMessage());
+            printSearchInTestQuestionText();
+        }
+    }
+
+    private void printSearchInTestQuestionAnswerText() {
+        System.out.print("Enter searched word:");
+        try {
+            String searchedWord = getStringFromKeyboard();
+            printQuestionsSearchResult(searchedWord, new SearchController().searchTestQuestionsByWordInText(searchedWord));
+        } catch (Exception e) {
+            System.out.print("Exception:\n "+ e.getMessage());
+            printSearchInTestQuestionAnswerText();
+        }
+    }
+    private void printQuestionsSearchResult(String searchedWord, Collection<TestQuestion> questions){
+        if(questions.isEmpty()){
+            System.out.println("Questions with "+ searchedWord+" not found");
+        }else {
+            printQuestionsCollection(questions);
+            System.out.println("");
+        }
+    }
+    private void printQuestionsCollection(Collection<TestQuestion> questions){
+        for(TestQuestion question: questions){
+            System.out.println(question.getQuestionText());
+            List<QuestionAnswer> answers =new TestQuestionController().getQuestionAnswers(question);
+            for(QuestionAnswer answer:answers)
+                System.out.println("Answer - "+answer.getText()+" and give "+answer.getPoints()+" points");
+            System.out.println("");
         }
     }
 
