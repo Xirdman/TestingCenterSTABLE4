@@ -13,7 +13,7 @@ public class Group {
      * Constructor for exemplar of group
      *
      * @param name name of the group
-     * @param id   identificator of group
+     * @param id   identifier of group
      */
     public Group(String name, int id) {
         this.name = name;
@@ -21,7 +21,7 @@ public class Group {
     }
 
     /**
-     * Mathod to get Group name
+     * Method to get Group name
      *
      * @return group name
      */
@@ -32,7 +32,7 @@ public class Group {
     /**
      * Method to get identificator of group
      *
-     * @return identificator of group
+     * @return identifier of group
      */
     public int getId() {
         return id;

@@ -1,5 +1,8 @@
 package com.testingcenter.controller;
 
+import com.testingcenter.controller.exceptions.AssignmentNotFoundException;
+import com.testingcenter.controller.exceptions.IncorrectInputException;
+import com.testingcenter.controller.exceptions.StudentTestNotFoundException;
 import com.testingcenter.model.*;
 
 import java.util.ArrayList;
@@ -11,19 +14,21 @@ import java.util.stream.Collectors;
  *
  * @author Matveev Alexander
  */
-public class StudentContoller {
+public class StudentController {
     /**
      * Method to get all tests assigned to student
      *
      * @param student Student to find a tests
      * @return List of student uncomplited tests
      */
-    public List<Test> getStudentTests(Student student) {
+    public List<Test> getStudentTests(Student student) throws StudentTestNotFoundException {
         List<Test> studentTests = new ArrayList<>();
         List<Assignment> assignments = Repository.getAssignments();
         for (Assignment assignment : assignments)
             if (assignment.getStudent() == student && !assignment.getIsCompleted())
                 studentTests.add(assignment.getTest());
+        if (studentTests.isEmpty())
+            throw new StudentTestNotFoundException("No tests for student " + student.getFirstName() + " " + student.getLastName());
         return studentTests;
     }
 
@@ -58,7 +63,7 @@ public class StudentContoller {
         for (Assignment assignment : assignments)
             if (assignment.getStudent() == student && assignment.getTest() == test)
                 return assignment;
-        return null;
+        throw new AssignmentNotFoundException("No assignment for " + student + " to test " + test);
     }
 
     /**
@@ -73,4 +78,38 @@ public class StudentContoller {
                 collect(Collectors.toList());
     }
 
+    /**
+     * Method to check is input from keyboard is correct and can be parsed to integer, and does it more than zero and less than target value
+     *
+     * @param inputfromKeyboard string to check
+     * @param value             maximum value of int, not included
+     * @return parsed integer from keyboard
+     * @throws IncorrectInputException exception if input is invalid
+     */
+    public int checkIntegerInputFromZeroToValue(String inputfromKeyboard, int value) throws IncorrectInputException {
+        int checkedInt;
+        try {
+            checkedInt = Integer.parseInt(inputfromKeyboard);
+        } catch (NumberFormatException exception) {
+            throw new IncorrectInputException("Input is not an integer");
+        }
+        if (checkedInt < 0)
+            throw new IncorrectInputException("Input must be positive");
+        else if (checkedInt >= value)
+            throw new IncorrectInputException("Input must be less than " + value);
+        return checkedInt;
+    }
+
+    /**
+     * Method to get student tests divided into pages
+     *
+     * @param pageSize size of the page
+     * @param student  student whose tests we retrieve
+     * @return collection of tests assigned to student divided into pages
+     */
+    public List<List<Test>> getStudentTestsByPageSize(int pageSize, Student student) {
+        List<Test> tests = getStudentTests(student);
+        return new PageConverter().convert(pageSize, tests);
+    }
 }
+

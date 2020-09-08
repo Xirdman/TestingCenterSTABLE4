@@ -1,9 +1,12 @@
 package com.testingcenter.view;
 
-import com.testingcenter.Main;
-import com.testingcenter.controller.StudentContoller;
+import com.testingcenter.controller.StudentController;
 import com.testingcenter.controller.TestController;
 import com.testingcenter.controller.TestQuestionController;
+import com.testingcenter.controller.exceptions.AssignmentNotFoundException;
+import com.testingcenter.controller.exceptions.IncorrectInputException;
+import com.testingcenter.controller.exceptions.IncorrectPageException;
+import com.testingcenter.controller.exceptions.StudentTestNotFoundException;
 import com.testingcenter.model.*;
 
 import java.util.Arrays;
@@ -16,7 +19,7 @@ import java.util.Scanner;
  *
  * @author Matveev Alexander
  */
-public class StudentMenu extends UserMenu{
+public class StudentMenu extends UserMenu {
 
     /**
      * First Screen of student menu after log in
@@ -24,57 +27,54 @@ public class StudentMenu extends UserMenu{
      * @param student Student to display menu after log in
      */
     public static void showFirstScreen(Student student) {
+        System.out.println("Hello " + student.getFirstName() + " " + student.getLastName());
         System.out.print("Choose options you want to do \n");
         System.out.print("1 - Watch your tests and how many questions in it \n");
-        System.out.println("2 - To complete test");
-        System.out.print("3 - Log out \n");
-        System.out.print("4 - Exit \n");
-        Scanner scanner = new Scanner(System.in);
+        System.out.print("2 - To complete test\n");
+        System.out.print("3 - To search\n");
+        System.out.print("4 - Log out \n");
+        System.out.print("5 - Exit \n");
         int i = 0;
         try {
-            i = Integer.parseInt(scanner.next());
+            i = getIntFromKeyboard();
             System.out.print("\n");
-        } catch (Exception e) {
-            System.out.print("Waiting to choose an option from 1 to 4 \n");
+        } catch (IncorrectInputException e) {
+            System.out.print("Error: \n");
+            System.out.print(e.getMessage());
+            showFirstScreen(student);
         }
         switch (i) {
             case 1:
-                printTests(student);
+                showTestsCollectionByPage(student);
                 showFirstScreen(student);
                 break;
             case 2:
                 startCompleteTest(student);
+                showFirstScreen(student);
                 break;
             case 3:
-                Main.showWelcomeScreen();
+                printSearchMenu();
+                showFirstScreen(student);
                 break;
             case 4:
-                scanner.close();
+                logOut();
+                break;
+            case 5:
                 System.exit(0);
                 break;
             default:
-                System.out.print("Waiting to choose an option from 1 to 3 \n");
+                System.out.print("Waiting to choose an option from 1 to 4 \n");
                 showFirstScreen(student);
         }
     }
 
-    private static void printTests(Student student) {
-        List<Test> studentTests = new StudentContoller().getStudentTests(student);
-        if (studentTests.isEmpty())
-            System.out.println("You dont have any tests to complete\n");
-        else
-            for (Test test : studentTests) {
-                System.out.print(test.getName() + " " + new TestController().getQuestionNumber(test) + "\n");
-            }
-    }
-
     private static void startCompleteTest(Student student) {
-        List<Test> list = new StudentContoller().getStudentTests(student);
-        if (list.isEmpty())
-            System.out.println("You dont have any tests to complete\n");
-        else
+        try {
+            List<Test> list = new StudentController().getStudentTests(student);
             chooseTest(student, list);
-        showFirstScreen(student);
+        } catch (StudentTestNotFoundException e) {
+            System.out.println("Error:\n" + e.getMessage());
+        }
     }
 
     private static void chooseTest(Student student, List<Test> studentUncompletedTests) {
@@ -85,14 +85,12 @@ public class StudentMenu extends UserMenu{
             i++;
         }
         Scanner scanner = new Scanner(System.in);
-        int choosenTestPosition = -1;
+        String inputString = scanner.next();
         try {
-            choosenTestPosition = Integer.parseInt(scanner.next());
-        } catch (Exception e) {
-            System.out.println("Waiting for your choice from 1 to " + i + " or 0 to go to student screen");
-        }
-        if (choosenTestPosition > 0) {
+            int choosenTestPosition = new StudentController().checkIntegerInputFromZeroToValue(inputString, i);
             completeTest(student, studentUncompletedTests.get(choosenTestPosition - 1));
+        } catch (IncorrectInputException e) {
+            System.out.println("Error:\n" + e.getMessage());
         }
     }
 
@@ -101,9 +99,13 @@ public class StudentMenu extends UserMenu{
                 .getTestQuestions(test)
                 .stream().allMatch(p -> printAnswersForQuestion(p, student))) {
             System.out.println("\nCongratulations! You answer to all questions from " + test.getName() + "\n");
-            Assignment assignment = new StudentContoller().getAssignmentForStudentsTest(student, test);
-            assignment.setIsCompleted(true);
-            printResultsAfterTest(assignment);
+            try {
+                Assignment assignment = new StudentController().getAssignmentForStudentsTest(student, test);
+                assignment.setIsCompleted(true);
+                printResultsAfterTest(assignment);
+            } catch (AssignmentNotFoundException e) {
+                System.out.println("Error:\n" + e.getMessage());
+            }
         }
 
     }
@@ -183,5 +185,18 @@ public class StudentMenu extends UserMenu{
         }
     }
 
+    private static void showTestsCollectionByPage(Student student) {
+        List<List<Test>> testsPages = new StudentController().getStudentTestsByPageSize(PAGE_SIZE,student);
+        int page = 0;
+        try {
+            printTestsListByPage(page, testsPages);
+        } catch (IncorrectPageException e) {
+            System.out.print("Error: \n");
+            System.out.print(e.getMessage() + "\n");
+        }
+    }
+
+
 
 }
+

@@ -67,10 +67,17 @@ public class Repository {
         tests = new ArrayList<>();
         Test test1 = new Test("JavaSE", teacher1);
         Test test2 = new Test("JavaEE", teacher1);
+        Test test99 = new Test("Paging test Test 1", teacher1);
+        Test test298 = new Test("Paging test Test 2", teacher1);
         Test test3 = new Test("Bodybuilding", teacher2);
         tests.add(test1);
         tests.add(test2);
         tests.add(test3);
+        tests.add(test99);
+        tests.add(test298);
+        Assignment assignment99 = new Assignment(student1, test99);
+        Assignment assignment298 = new Assignment(student1, test298);
+
 
         Assignment assignment1 = new Assignment(student1, test1);
         Assignment assignment2 = new Assignment(student2, test2, true);
@@ -81,6 +88,8 @@ public class Repository {
         assignments.add(assignment2);
         assignments.add(assignment3);
         assignments.add(assignment4);
+        assignments.add(assignment99);
+        assignments.add(assignment298);
 
         questions = new ArrayList<>();
         questionAnswers = new ArrayList<>();

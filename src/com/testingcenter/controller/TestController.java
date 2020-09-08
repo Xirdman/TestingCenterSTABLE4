@@ -1,5 +1,6 @@
 package com.testingcenter.controller;
 
+import com.testingcenter.controller.exceptions.NoTestsForTeacherException;
 import com.testingcenter.model.*;
 
 import java.util.ArrayList;
@@ -18,12 +19,15 @@ public class TestController {
      * @param teacher Teacher who make test
      * @return List of tests created by teacher
      */
-    public List<Test> getTeachersTests(Teacher teacher) {
+    public List<Test> getTeachersTests(Teacher teacher) throws NoTestsForTeacherException {
         List<Test> tests = Repository.getTests();
         List<Test> result = new ArrayList<>();
         for (Test test : tests)
             if (test.getTeacher() == teacher)
                 result.add(test);
+        if (result.isEmpty()) {
+            throw new NoTestsForTeacherException("Tests for teacher - " + teacher.getFirstName() + " " + teacher.getLastName() + " not founded");
+        }
         return result;
     }
 
@@ -46,7 +50,7 @@ public class TestController {
         if (allTests > 0) {
             return completedTests + "/" + allTests + " completed";
         } else {
-            return "No assignments for this test";
+            return "No assignments for " + test.getName();
         }
     }
 
@@ -101,7 +105,7 @@ public class TestController {
      * @return collection of answers of student for test
      */
     public List<StudentAnswerForTestQuestion> getStudentsAnswersForTest(Student student, Test test) {
-        List<StudentAnswerForTestQuestion> answers = new StudentContoller().getStudentAnswers(student);
+        List<StudentAnswerForTestQuestion> answers = new StudentController().getStudentAnswers(student);
         List<StudentAnswerForTestQuestion> result = new ArrayList<>();
         TestQuestionController testQuestionController = new TestQuestionController();
         for (StudentAnswerForTestQuestion answer : answers) {
@@ -201,4 +205,20 @@ public class TestController {
         return Math.max(result, 0);
     }
 
+    /**
+     * Method to get collection of teachers tests divided into pages
+     *
+     * @param pageSize size of the page
+     * @param teacher  teacher whose tests we search
+     * @return collection of teachers tests divided into pages and sorted by test name
+     */
+    public List<List<Test>> getTeacherTestsPaged(int pageSize, Teacher teacher) {
+        List<Test> tests = getTeachersTests(teacher)
+                .stream()
+                .sorted((a,b)->a.getName().compareTo(b.getName()))
+                .collect(Collectors.toList());
+        return new PageConverter().convert(pageSize, tests);
+    }
+
 }
+

@@ -43,7 +43,7 @@ public class TestQuestion {
     /**
      * Method to get identificator of test
      *
-     * @return identificator of test
+     * @return identifier of test
      */
     public int getId() {
         return id;
