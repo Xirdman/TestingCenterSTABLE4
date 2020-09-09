@@ -1,12 +1,13 @@
 package com.testingcenter.view;
 
-import com.testingcenter.controller.AdminController;
+import com.testingcenter.controller.UsersSearchController;
 import com.testingcenter.controller.exceptions.IncorrectInputException;
 import com.testingcenter.controller.exceptions.IncorrectPageException;
 import com.testingcenter.model.Admin;
 import com.testingcenter.model.User;
 
 import java.util.List;
+
 
 /**
  * View class for admin menu
@@ -57,63 +58,45 @@ public class AdminMenu extends UserMenu {
     }
 
     private static void showUsersListByPage() {
-        List<List<User>> usersPages = new AdminController().getUsersByPageSize(PAGE_SIZE);
-        int page = 0;
-        try {
-            printUsersListByPage(page, usersPages);
-        } catch (IncorrectPageException e) {
-            System.out.print("Error: \n");
-            System.out.print(e.getMessage() + "\n");
-        }
+        int sortOpt = getUsersSortingOption();
+        printPageOfUsers(PAGE_SIZE, 0, sortOpt);
     }
 
-    private static void printUsersListByPage(int page, List<List<User>> users) {
-        if (page >= users.size() || page < 0)
-            throw new IncorrectPageException("Page " + (page + 1) + " not found");
-        System.out.println("Users page number " + page + ":");
-        List<User> userPageToPrint = users.get(page);
-        for (User user : userPageToPrint) {
-            System.out.println(user.getFirstName() + " " + user.getLastName() + " " + user.getClass().getSimpleName());
-        }
-        System.out.println();
-        choosePageOfUsersCollectionToPrint(page, users);
-    }
-
-    private static void choosePageOfUsersCollectionToPrint(int page, List<List<User>> users) {
-        PagingOptions chosenOption;
-        if (page == 0) {
-            if (page == users.size() - 1) {
-                System.out.println("It is the only page\n");
-                chosenOption = PagingOptions.Back;
-            } else {
-                chosenOption = chooseOptionWithoutPrevPage();
-            }
-        } else {
-            if (page == users.size() - 1) {
-                chosenOption = chooseOptionWithoutNextPage();
-            } else {
-                chosenOption = choosePagingOption();
-            }
-        }
-        switch (chosenOption) {
-            case PrevPage:
-                printUsersListByPage(page - 1, users);
-                break;
-            case NextPage:
-                printUsersListByPage(page + 1, users);
-                break;
-            case Back:
+    private static void printPageOfUsers(int limit, int offset, int sortingOptions) {
+        List<User> users = new UsersSearchController(sortingOptions).searchByFirstName(limit, offset, "");
+        System.out.println("Users :");
+        users.forEach(a -> System.out.println(a.getFirstName() + " " + a.getLastName() + " " + a.getMiddleName()));
+        System.out.println("page - " + ((offset / limit) + 1) + "\n");
+        PagingOptions pagingOption;
+        if (offset == 0)
+            pagingOption = getPagingOptionWithoutPrevPageOption();
+        else pagingOption = getPagingOption();
+        switch (pagingOption) {
+            case Exit:
+                exit();
                 break;
             case LogOut:
                 logOut();
                 break;
-            case Exit:
-                exit();
+            case NextPage:
+                try {
+                    printPageOfUsers(limit, offset + limit, sortingOptions);
+                } catch (IncorrectPageException e) {
+                    System.out.println("There is no next page");
+                    printPageOfUsers(limit, offset, sortingOptions);
+                }
+                break;
+            case PrevPage:
+                try {
+                    printPageOfUsers(limit, offset - limit, sortingOptions);
+                } catch (IncorrectPageException e) {
+                    System.out.println("There is no previous page");
+                    printPageOfUsers(limit, offset, sortingOptions);
+                }
                 break;
             default:
-                choosePageOfUsersCollectionToPrint(page, users);
+                break;
         }
     }
-
 
 }

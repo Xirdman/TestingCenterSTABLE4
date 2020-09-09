@@ -2,6 +2,7 @@ package com.testingcenter.controller;
 
 import com.testingcenter.controller.exceptions.AssignmentNotFoundException;
 import com.testingcenter.controller.exceptions.IncorrectInputException;
+import com.testingcenter.controller.exceptions.IncorrectPageException;
 import com.testingcenter.controller.exceptions.StudentTestNotFoundException;
 import com.testingcenter.model.*;
 
@@ -19,7 +20,7 @@ public class StudentController {
      * Method to get all tests assigned to student
      *
      * @param student Student to find a tests
-     * @return List of student uncomplited tests
+     * @return List of student uncompleted tests
      */
     public List<Test> getStudentTests(Student student) throws StudentTestNotFoundException {
         List<Test> studentTests = new ArrayList<>();
@@ -30,6 +31,24 @@ public class StudentController {
         if (studentTests.isEmpty())
             throw new StudentTestNotFoundException("No tests for student " + student.getFirstName() + " " + student.getLastName());
         return studentTests;
+    }
+
+    /**
+     * Method to get one page of tests assigned to student
+     *
+     * @param limit         number of records on page
+     * @param offset        offset from start
+     * @param student       student whom tests we get
+     * @param sortingOption option to sort collection. 1- to sort by name. 2- to sort by coefficient of test, 3- to sort by teachers name
+     * @return page of tests assigned to student
+     * @throws IncorrectPageException when method cant form a page
+     */
+    public List<Test> getStudentTests(int limit, int offset, Student student, int sortingOption)throws IncorrectPageException {
+        List<Test> tests = getStudentTests(student);
+        tests = new TestsSearchController(sortingOption).sortTests(tests).stream().skip(offset).limit(limit).collect(Collectors.toList());
+        if (tests.isEmpty())
+            throw new IncorrectPageException("No such page");
+        return tests;
     }
 
     /**
@@ -100,16 +119,5 @@ public class StudentController {
         return checkedInt;
     }
 
-    /**
-     * Method to get student tests divided into pages
-     *
-     * @param pageSize size of the page
-     * @param student  student whose tests we retrieve
-     * @return collection of tests assigned to student divided into pages
-     */
-    public List<List<Test>> getStudentTestsByPageSize(int pageSize, Student student) {
-        List<Test> tests = getStudentTests(student);
-        return new PageConverter().convert(pageSize, tests);
-    }
 }
 

@@ -3,6 +3,8 @@ package com.testingcenter.controller;
 import com.testingcenter.model.*;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -53,17 +55,19 @@ public class Repository {
      */
     public static void initialize() {
         users = new ArrayList<>();
-        Teacher teacher1 = new Teacher("Dmitriy", "Bykovets", "login", "password");
-        Teacher teacher2 = new Teacher("Arnold", "Shcwarzeneger", "kabuto", "perpeto");
+        Teacher teacher1 = new Teacher("Dmitriy", "Bykovets", "Igorevich", new GregorianCalendar(1985, Calendar.DECEMBER, 31), "login", "password");
+        Teacher teacher2 = new Teacher("Arnold", "Shcwarzeneger", "Shrut", new GregorianCalendar(1965, 0, 1), "kabuto", "perpeto");
         users.add(teacher1);
         users.add(teacher2);
 
-        Student student1 = new Student("Ivan", "Ivanov", "ivan", "123");
-        Student student2 = new Student("Sergey", "Sergeevich", "Sergey", "qwerty");
+        Student student1 = new Student("Ivan", "Ivanov", "Igorevich", new GregorianCalendar(1990, 1, 3), "ivan", "123");
+        Student student2 = new Student("Sergey", "Sergeevich", "Igorevich", new GregorianCalendar(1991, 3, 4), "Sergey", "qwerty");
         users.add(student1);
         users.add(student2);
-        users.add(new Admin("Vladimir", "Putin", "admin", "admin"));
+        users.add(new Admin("Vladimir", "Putin", "Igorevich", new GregorianCalendar(1965, 5, 4), "admin", "admin"));
 
+        for (int i = 0; i < 30; i++)
+            users.add(new User("TestDummy" + i, "TestDummy" + i, "TestDummy" + i, new GregorianCalendar(1999, 0, i), "", ""));
         tests = new ArrayList<>();
         Test test1 = new Test("JavaSE", teacher1);
         Test test2 = new Test("JavaEE", teacher1);
@@ -155,31 +159,31 @@ public class Repository {
 
         student1.setGroup(0);
         student2.setGroup(0);
-        Student student3 = new Student("Petr", "Petrov", "petya", "petro");
-        Student student4 = new Student("Victor", "Nurgaliev", "vic", "Victory");
+        Student student3 = new Student("Petr", "Petrov", "Petrovich", new GregorianCalendar(1965, 10, 17), "petya", "petro");
+        Student student4 = new Student("Victor", "Nurgaliev", "Andreevich", new GregorianCalendar(2000, 0, 24), "vic", "Victory");
         users.add(student3);
         users.add(student4);
         student3.setGroup(1);
         student4.setGroup(1);
-        Student student5 = new Student("Andrey", "Andreev", "andrew", "andy");
+        Student student5 = new Student("Andrey", "Andreev", "Andreevich", new GregorianCalendar(1967, 4, 11), "andrew", "andy");
         users.add(student5);
         student5.setGroup(2);
-        Student student6 = new Student("Boris", "Bogolepov", "boar", "brand");
+        Student student6 = new Student("Boris", "Bogolepov", "Borisovich", new GregorianCalendar(1988, 6, 6), "boar", "brand");
         users.add(student6);
         student6.setGroup(3);
-        Student student7 = new Student("Veniamin", "Volochkov", "vrun", "vvv");
+        Student student7 = new Student("Veniamin", "Volochkov", "Victorovich", new GregorianCalendar(1979, 9, 9), "vrun", "vvv");
         users.add(student7);
         student7.setGroup(4);
-        Student student8 = new Student("Gleb", "Gaidarov", "gusli", "gusi");
+        Student student8 = new Student("Gleb", "Gaidarov", "Grigorevich", new GregorianCalendar(1989, 3, 22), "gusli", "gusi");
         users.add(student8);
         student8.setGroup(2);
-        Student student9 = new Student("Denis", "Durov", "draka", "ded");
+        Student student9 = new Student("Denis", "Durov", "Igorevich", new GregorianCalendar(1965, 0, 1), "draka", "ded");
         users.add(student9);
         student9.setGroup(3);
-        Student student10 = new Student("Evlampiy", "Egorov", "esqire", "elka");
+        Student student10 = new Student("Evlampiy", "Egorov", "Evgenyevich", new GregorianCalendar(1900, 8, 8), "esqire", "elka");
         users.add(student10);
         student5.setGroup(4);
-        Student student11 = new Student("Georgiy", "Golubev", "granata", "gandhi");
+        Student student11 = new Student("Georgiy", "Golubev", "Grigorevich", new GregorianCalendar(1971, 5, 3), "granata", "gandhi");
         users.add(student11);
         student5.setGroup(2);
 

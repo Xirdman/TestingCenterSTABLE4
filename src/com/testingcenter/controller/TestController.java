@@ -1,5 +1,6 @@
 package com.testingcenter.controller;
 
+import com.testingcenter.controller.exceptions.IncorrectPageException;
 import com.testingcenter.controller.exceptions.NoTestsForTeacherException;
 import com.testingcenter.model.*;
 
@@ -29,6 +30,24 @@ public class TestController {
             throw new NoTestsForTeacherException("Tests for teacher - " + teacher.getFirstName() + " " + teacher.getLastName() + " not founded");
         }
         return result;
+    }
+
+    /**
+     * Method to get one page of teachers tests
+     *
+     * @param limit       number of records on page
+     * @param offset      offset from start
+     * @param teacher     teacher whom tests we want to get
+     * @param sortingCode option to sort collection. 1- to sort by name. 2- to sort by coefficient of test, 3- to sort by teachers last name
+     * @return page of teachers tests
+     * @throws IncorrectPageException when method cant form a page
+     */
+    public List<Test> getTeacherTests(int limit, int offset, Teacher teacher, int sortingCode) throws IncorrectPageException {
+        List<Test> teacherTests = getTeachersTests(teacher);
+        teacherTests = new TestsSearchController(sortingCode).sortTests(teacherTests).stream().skip(offset).limit(limit).collect(Collectors.toList());
+        if (teacherTests.isEmpty())
+            throw new IncorrectPageException("No more pages for tests");
+        return teacherTests;
     }
 
     /**
@@ -205,20 +224,6 @@ public class TestController {
         return Math.max(result, 0);
     }
 
-    /**
-     * Method to get collection of teachers tests divided into pages
-     *
-     * @param pageSize size of the page
-     * @param teacher  teacher whose tests we search
-     * @return collection of teachers tests divided into pages and sorted by test name
-     */
-    public List<List<Test>> getTeacherTestsPaged(int pageSize, Teacher teacher) {
-        List<Test> tests = getTeachersTests(teacher)
-                .stream()
-                .sorted((a,b)->a.getName().compareTo(b.getName()))
-                .collect(Collectors.toList());
-        return new PageConverter().convert(pageSize, tests);
-    }
 
 }
 

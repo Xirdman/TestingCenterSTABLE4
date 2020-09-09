@@ -1,6 +1,7 @@
 package com.testingcenter.controller;
 
 import com.testingcenter.controller.exceptions.GroupNotFoundException;
+import com.testingcenter.controller.exceptions.IncorrectPageException;
 import com.testingcenter.model.Group;
 import com.testingcenter.model.Student;
 import com.testingcenter.model.User;
@@ -47,6 +48,21 @@ public class GroupController {
     }
 
     /**
+     * Method to get page of Students in group by page
+     *
+     * @param limit   number of students in collection
+     * @param offset  offset from start
+     * @param groupId identifier of group
+     * @return page of Students in group by page
+     */
+    public List<Student> getGroupRtings(int limit, int offset, int groupId) {
+        List<Student> students = getGroupRatings(groupId).stream().skip(offset).limit(limit).collect(Collectors.toList());
+        if (students.isEmpty())
+            throw new IncorrectPageException("Cant form a page");
+        return students;
+    }
+
+    /**
      * Method to check is group with identifier exists
      *
      * @param groupId group identifier
@@ -74,33 +90,11 @@ public class GroupController {
         return Repository.getGroups();
     }
 
-    /**
-     * Method to get all groups divided into pages
-     *
-     * @param pageSize size of page
-     * @return Collection of groups divided into pages sorted by group name
-     */
-    public List<List<Group>> getGroupsByPageSize(int pageSize) {
-        List<Group> groups = getGroups()
-                .stream()
-                .sorted((a, b) -> a.getName().compareTo(b.getName()))
-                .collect(Collectors.toList());
-        return new PageConverter().convert(pageSize, groups);
-    }
-
-    /**
-     * Method to get all students from group divided into pages
-     *
-     * @param pageSize size of the page
-     * @param groupId  identifier of group
-     * @return Collection of students from group divided into pages and sorted by last name
-     */
-    public List<List<Student>> getStudentsByGroupByPageSize(int pageSize, int groupId) {
-        List<Student> students = getGroupRatings(groupId)
-                .stream()
-                .sorted((a, b) -> a.getLastName().compareTo(b.getLastName()))
-                .collect(Collectors.toList());
-        return new PageConverter().convert(pageSize, students);
+    public List<Group> getGroupsSorted(int limit, int offset, int codeOfSorting) {
+        List<Group> groups = new GroupSorter().sortGroups(getGroups(), codeOfSorting).subList(offset, limit);
+        if (groups.isEmpty())
+            throw new IncorrectPageException("No such page");
+        return groups;
     }
 }
 

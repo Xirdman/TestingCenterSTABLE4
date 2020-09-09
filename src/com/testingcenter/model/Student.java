@@ -1,5 +1,7 @@
 package com.testingcenter.model;
 
+import java.util.Calendar;
+
 /**
  * Model class for Admin user
  *
@@ -12,13 +14,15 @@ public class Student extends User {
     /**
      * Constructor for model class
      *
-     * @param firstName first name of student
-     * @param lastName  last name of student
-     * @param login     login of student
-     * @param password  password of student
+     * @param firstName   first name of student
+     * @param lastName    last name of student
+     * @param middleName  middle name of user
+     * @param dateOfBirth date of birth of user
+     * @param login       login of student
+     * @param password    password of student
      */
-    public Student(String firstName, String lastName, String login, String password) {
-        super(firstName, lastName, login, password);
+    public Student(String firstName, String lastName, String middleName, Calendar dateOfBirth, String login, String password) {
+        super(firstName, lastName, middleName, dateOfBirth, login, password);
     }
 
     /**
@@ -28,17 +32,18 @@ public class Student extends User {
      * @param lastName  last name of student
      * @param login     login of student
      * @param password  password of student
-     * @param groupId   identificator of group
+     * @param groupId   identifier of group
      */
-    public Student(String firstName, String lastName, String login, String password, int groupId) {
-        super(firstName, lastName, login, password);
+    public Student(String firstName, String lastName, String middleName, Calendar dateOfBirth, String login, String password, int groupId) {
+
+        super(firstName, lastName, middleName, dateOfBirth, login, password);
         this.groupId = groupId;
     }
 
     /**
      * Getter for students group
      *
-     * @return identificator of student group
+     * @return identifier of student group
      */
     public int getGroupId() {
         return groupId;
@@ -47,7 +52,7 @@ public class Student extends User {
     /**
      * Setter for student group
      *
-     * @param groupId identificator of group to set
+     * @param groupId identifier of group to set
      */
     public void setGroup(int groupId) {
         this.groupId = groupId;
@@ -55,6 +60,7 @@ public class Student extends User {
 
     /**
      * Getter for rating of Student
+     *
      * @return rating of Student
      */
     public double getRating() {
@@ -63,6 +69,7 @@ public class Student extends User {
 
     /**
      * Setter for student rating
+     *
      * @param rating rating of student
      */
     public void setRating(double rating) {

@@ -43,18 +43,6 @@ public class AdminController {
         }
     }
 
-    /**
-     * Method to get all users registered in system and divided int pages
-     *
-     * @param pageSize size of the page
-     * @return collection of all users divided into pages and sorted by last name
-     */
-    public List<List<User>> getUsersByPageSize(int pageSize) {
-        List<User> users = getUsers()
-                .stream()
-                .sorted((a, b) -> a.getLastName().compareTo(b.getLastName()))
-                .collect(Collectors.toList());
-        return new PageConverter().convert(pageSize, users);
-    }
+
 }
 

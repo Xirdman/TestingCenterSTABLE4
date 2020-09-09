@@ -1,14 +1,9 @@
 package com.testingcenter.view;
 
-import com.testingcenter.controller.TestController;
 import com.testingcenter.controller.exceptions.IncorrectInputException;
-import com.testingcenter.controller.exceptions.IncorrectPageException;
-import com.testingcenter.model.*;
-import com.testingcenter.view.searchviews.SearchInTestQuestionsView;
-import com.testingcenter.view.searchviews.SearchInTestsView;
-import com.testingcenter.view.searchviews.SearchInUsersView;
+import com.testingcenter.view.searchingmenus.TestsSearchMenu;
+import com.testingcenter.view.searchingmenus.UsersSearchMenu;
 
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -51,10 +46,9 @@ public class UserMenu {
         System.out.print("Choose where you want to search \n");
         System.out.print("1 - Search in tests\n");
         System.out.print("2 - Search in users \n");
-        System.out.print("3 - Search in questions \n");
-        System.out.print("4 - Back to previous menu\n");
-        System.out.print("5 - Log out\n");
-        System.out.print("6 - Exit\n");
+        System.out.print("3 - Back to previous menu\n");
+        System.out.print("4 - Log out\n");
+        System.out.print("5 - Exit\n");
         int i = 0;
         try {
             i = getIntFromKeyboard();
@@ -64,36 +58,24 @@ public class UserMenu {
         }
         switch (i) {
             case 1:
-                SearchInTestsView.printSearchInTests();
+                TestsSearchMenu.printSearchMenu();
                 break;
             case 2:
-                SearchInUsersView.printSearchInUsers();
+                UsersSearchMenu.printSearchMenu();
                 break;
             case 3:
-                SearchInTestQuestionsView.printSearchInQuestions();
                 break;
             case 4:
-                break;
-            case 5:
                 logOut();
                 break;
-            case 6:
+            case 5:
                 exit();
                 break;
             default:
                 System.out.print("Waiting to choose an option from 1 to 6 \n");
                 printSearchMenu();
+                break;
         }
-    }
-
-    /**
-     * Method to get string to search in data
-     *
-     * @return string to search in data
-     */
-    protected static String getSearchedString() {
-        System.out.println("Enter the word you want to search: ");
-        return getStringFromKeyboard();
     }
 
     /**
@@ -106,26 +88,12 @@ public class UserMenu {
     }
 
     /**
-     * Method to get integer from keyboard to search in Tests by number of questions
-     *
-     * @return number of questions in test
-     */
-    protected static int getNumberOfQuestionToSearch() {
-        System.out.println("Enter number of questions: ");
-        try {
-            return getIntFromKeyboard();
-        } catch (Exception e) {
-            System.out.println("Invalid input");
-            return getNumberOfQuestionToSearch();
-        }
-    }
-
-    /**
      * Method to get integer from keyboard
      *
      * @return integer from keyboard
+     * @throws IncorrectInputException if input from keyboard wasn't integer value
      */
-    protected static int getIntFromKeyboard() {
+    protected static int getIntFromKeyboard() throws IncorrectInputException {
         Scanner scanner = new Scanner(System.in);
         String result = scanner.next();
         try {
@@ -136,12 +104,11 @@ public class UserMenu {
     }
 
     /**
-     * Method to choose what do next: print next page, log out, exit or back to previous menu
+     * Method to get intent what to do with paged collection but without option to go to previous page
      *
-     * @return enum of next action
+     * @return intent what to do with paged collection
      */
-    protected static PagingOptions chooseOptionWithoutPrevPage() {
-        PagingOptions returnValue;
+    protected static PagingOptions getPagingOptionWithoutPrevPageOption() {
         System.out.print("Choose options you want to do \n");
         System.out.print("1 - Next page \n");
         System.out.print("2 - Back to previous menu \n");
@@ -154,76 +121,28 @@ public class UserMenu {
         } catch (IncorrectInputException e) {
             System.out.print("Error: \n");
             System.out.print(e.getMessage());
-            chooseOptionWithoutPrevPage();
         }
         switch (i) {
             case 1:
-                returnValue = PagingOptions.NextPage;
-                break;
+                return PagingOptions.NextPage;
             case 2:
-                returnValue = PagingOptions.Back;
-                break;
+                return PagingOptions.Back;
             case 3:
-                returnValue = PagingOptions.LogOut;
-                break;
+                return PagingOptions.LogOut;
             case 4:
-                returnValue = PagingOptions.Exit;
-                break;
+                return PagingOptions.Exit;
             default:
                 System.out.print("Waiting to choose an option from 1 to 4 \n");
-                returnValue = chooseOptionWithoutPrevPage();
+                return getPagingOptionWithoutPrevPageOption();
         }
-        return returnValue;
     }
 
     /**
-     * Method to choose what do next: print previous page, log out, exit or back to previous menu
+     * Method to get intent what to do with paged collection
      *
-     * @return enum of next action
+     * @return intent what to do with paged collection
      */
-    protected static PagingOptions chooseOptionWithoutNextPage() {
-        PagingOptions returnValue;
-        System.out.print("Choose options you want to do \n");
-        System.out.print("1 - Previous page \n");
-        System.out.print("2 - Back to previous menu \n");
-        System.out.print("3 - Log out \n");
-        System.out.print("4 - Exit \n");
-        int i = 0;
-        try {
-            i = getIntFromKeyboard();
-            System.out.print("\n");
-        } catch (IncorrectInputException e) {
-            System.out.print("Error: \n");
-            System.out.print(e.getMessage());
-            chooseOptionWithoutNextPage();
-        }
-        switch (i) {
-            case 1:
-                returnValue = PagingOptions.PrevPage;
-                break;
-            case 2:
-                returnValue = PagingOptions.Back;
-                break;
-            case 3:
-                returnValue = PagingOptions.LogOut;
-                break;
-            case 4:
-                returnValue = PagingOptions.Exit;
-                break;
-            default:
-                System.out.print("Waiting to choose an option from 1 to 4 \n");
-                returnValue = chooseOptionWithoutNextPage();
-        }
-        return returnValue;
-    }
-
-    /**
-     * Method to choose what do next: print next page, print previous page, log out, exit or back to previous menu
-     *
-     * @return enum of next action
-     */
-    protected static PagingOptions choosePagingOption() {
-        PagingOptions returnValue;
+    protected static PagingOptions getPagingOption() {
         System.out.print("Choose options you want to do \n");
         System.out.print("1 - Previous page \n");
         System.out.print("2 - Next page \n");
@@ -237,91 +156,75 @@ public class UserMenu {
         } catch (IncorrectInputException e) {
             System.out.print("Error: \n");
             System.out.print(e.getMessage());
-            choosePagingOption();
         }
         switch (i) {
             case 1:
-                returnValue = PagingOptions.PrevPage;
-                break;
+                return PagingOptions.PrevPage;
             case 2:
-                returnValue = PagingOptions.NextPage;
-                break;
+                return PagingOptions.NextPage;
             case 3:
-                returnValue = PagingOptions.Back;
-                break;
+                return PagingOptions.Back;
             case 4:
-                returnValue = PagingOptions.LogOut;
-                break;
+                return PagingOptions.LogOut;
             case 5:
-                returnValue = PagingOptions.Exit;
-                break;
+                return PagingOptions.Exit;
             default:
                 System.out.print("Waiting to choose an option from 1 to 5 \n");
-                returnValue = choosePagingOption();
+                return getPagingOptionWithoutPrevPageOption();
         }
-        return returnValue;
     }
 
     /**
-     * Method to print current page of tests collection
+     * Method to print menu to sort users and choose an option among them
      *
-     * @param page  number of page to print
-     * @param tests collection to retrieve page to print
+     * @return option to sort users
      */
-    protected static void printTestsListByPage(int page, List<List<Test>> tests) {
-        if (page >= tests.size() || page < 0)
-            throw new IncorrectPageException("Page " + (page + 1) + " not found");
-        System.out.println("Tests page number " + (page + 1) + ":");
-        List<Test> userPageToPrint = tests.get(page);
-        for (Test test : userPageToPrint) {
-            System.out.print("Test - \"" + test.getName() + "\" with  " + new TestController().getQuestionNumber(test) + " questions\n");
+    protected static int getUsersSortingOption() {
+        System.out.println("Choose sorting option:");
+        System.out.print("1 - Sort by first name\n");
+        System.out.print("2 - Sort by last name \n");
+        System.out.print("3 - Sort by middle name \n");
+        System.out.print("4 - Sort by date of birth name \n");
+        int i = 0;
+        try {
+            i = getIntFromKeyboard();
+            System.out.print("\n");
+        } catch (IncorrectInputException e) {
+            System.out.print("Error: \n");
+            System.out.println(e.getMessage());
         }
-        System.out.println();
-        chooseTestsPageToPrint(page, tests);
+        if ((i > 0) && (i < 5))
+            return i;
+        else {
+            System.out.println("Please choose from options");
+            return getUsersSortingOption();
+        }
     }
 
     /**
-     * Method to choose which action will go next
+     * Method to print menu to sort tests and choose an option among them
      *
-     * @param page  number of current page
-     * @param tests collection of tests we printing now
+     * @return option to sort tests
      */
-    protected static void chooseTestsPageToPrint(int page, List<List<Test>> tests) {
-        PagingOptions chosenOption;
-        if (page == 0) {
-            if (page == tests.size() - 1) {
-                System.out.println("It is the only page\n");
-                chosenOption = PagingOptions.Back;
-            } else {
-                chosenOption = chooseOptionWithoutPrevPage();
-            }
-        } else {
-            if (page == tests.size() - 1) {
-                chosenOption = chooseOptionWithoutNextPage();
-            } else {
-                chosenOption = choosePagingOption();
-            }
+    protected static int getTestsSortingOption() {
+        System.out.println("Choose sorting option:");
+        System.out.print("1 - Sort by test name\n");
+        System.out.print("2 - Sort by coefficient name \n");
+        System.out.print("3 - Sort by teachers last name \n");
+        int i = 0;
+        try {
+            i = getIntFromKeyboard();
+            System.out.print("\n");
+        } catch (IncorrectInputException e) {
+            System.out.print("Error: \n");
+            System.out.print(e.getMessage());
         }
-        switch (chosenOption) {
-            case PrevPage:
-                printTestsListByPage(page - 1, tests);
-                break;
-            case NextPage:
-                printTestsListByPage(page + 1, tests);
-                break;
-            case Back:
-                break;
-            case LogOut:
-                logOut();
-                break;
-            case Exit:
-                exit();
-                break;
-            default:
-                System.out.print("Waiting to choose an option from 1 to 5 \n");
-                chooseTestsPageToPrint(page, tests);
+        if ((i > 0) && (i < 4))
+            return i;
+        else {
+            System.out.println("Please choose from options");
+            return getTestsSortingOption();
         }
     }
-
 
 }

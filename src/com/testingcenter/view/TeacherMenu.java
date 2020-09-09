@@ -5,7 +5,6 @@ import com.testingcenter.controller.TestController;
 import com.testingcenter.controller.exceptions.GroupNotFoundException;
 import com.testingcenter.controller.exceptions.IncorrectInputException;
 import com.testingcenter.controller.exceptions.IncorrectPageException;
-import com.testingcenter.controller.exceptions.NoTestsForTeacherException;
 import com.testingcenter.model.*;
 
 import java.util.List;
@@ -83,79 +82,140 @@ public class TeacherMenu extends UserMenu {
     }
 
     private static void displayTeachersTestsWithPages(Teacher teacher) {
-        TestController testController = new TestController();
-        try {
-            List<List<Test>> tests = testController.getTeacherTestsPaged(PAGE_SIZE, teacher);
-            printTestsCollectionByPageWithResults(0, tests);
-        } catch (NoTestsForTeacherException | IncorrectPageException e) {
-            System.out.println("Error:\n" + e.getMessage());
+        int sort = getTestsSortingOption();
+        printSearchedTestsByTeacher(PAGE_SIZE, 0, teacher, sort);
+    }
+
+
+    private static void printGroupRatingDesc2(int groupId) {
+        System.out.println("Group " + groupId + " ratings descending");
+        printGroupResults(PAGE_SIZE, 0, groupId);
+    }
+
+    private static void printGroupResults(int limit, int offset, int groupId) {
+        List<Student> students = new GroupController().getGroupRtings(limit, offset, groupId);
+        students.forEach(a -> System.out.println(a.getFirstName() + " " + a.getLastName() + " with rating " + a.getRating()));
+        PagingOptions pagingOption;
+        if (offset == 0)
+            pagingOption = getPagingOptionWithoutPrevPageOption();
+        else pagingOption = getPagingOption();
+        switch (pagingOption) {
+            case PrevPage:
+                try {
+                    printGroupResults(limit, offset - limit, groupId);
+                } catch (IncorrectPageException e) {
+                    System.out.println("Cant back to previous page\n");
+                    printGroupResults(limit, offset, groupId);
+                }
+                break;
+            case NextPage:
+                try {
+                    printGroupResults(limit, offset + limit, groupId);
+                } catch (IncorrectPageException e) {
+                    System.out.println("Cant go to next page\n");
+                    printGroupResults(limit, offset, groupId);
+                }
+                break;
+            case LogOut:
+                logOut();
+                break;
+            case Back:
+                break;
+            case Exit:
+                exit();
+                break;
         }
     }
 
-    private static void printTestsCollectionByPageWithResults(int page, List<List<Test>> tests) {
-        if (page >= tests.size() || page < 0)
-            throw new IncorrectPageException("Page " + (page+1) + " not found");
-        System.out.println("Tests page number " + (page+1) + ":");
-        List<Test> userPageToPrint = tests.get(page);
-        for (Test test : userPageToPrint) {
-            System.out.print("Test - " + test.getName() + "\n" + new TestController().getTestResults(test) + " \n");
+    private static void printSearchedTestsByTeacher(int limit, int offset, Teacher teacher, int usersSortingOption) throws IncorrectPageException {
+        List<Test> tests = new TestController().getTeacherTests(limit, offset, teacher, usersSortingOption);
+        System.out.println("Tests of teacher :");
+        tests.forEach(a -> System.out.println(a.getName() + " has coefficient to pass " + a.getCoefficientToPass() +
+                " from teacher " + a.getTeacher().getLastName() + " " + a.getTeacher().getFirstName() + " " + a.getTeacher().getMiddleName()));
+        System.out.println("page - " + ((offset / limit) + 1) + "\n");
+        PagingOptions pagingOption;
+        if (offset == 0)
+            pagingOption = getPagingOptionWithoutPrevPageOption();
+        else pagingOption = getPagingOption();
+        switch (pagingOption) {
+            case PrevPage:
+                try {
+                    printSearchedTestsByTeacher(limit, offset - limit, teacher, usersSortingOption);
+                } catch (IncorrectPageException e) {
+                    System.out.println("Cant back to previous page\n");
+                    printSearchedTestsByTeacher(limit, offset, teacher, usersSortingOption);
+                }
+                break;
+            case NextPage:
+                try {
+                    printSearchedTestsByTeacher(limit, offset + limit, teacher, usersSortingOption);
+                } catch (IncorrectPageException e) {
+                    System.out.println("Cant go to next page\n");
+                    printSearchedTestsByTeacher(limit, offset, teacher, usersSortingOption);
+                }
+                break;
+            case LogOut:
+                logOut();
+                break;
+            case Back:
+                break;
+            case Exit:
+                exit();
+                break;
         }
-        System.out.println();
-        chooseTestsPageToPrint(page, tests);
     }
 
     private static void printGroupsWithPageSize() {
+        int sort = getGroupsSortingOption();
+        printGroups(PAGE_SIZE, 0, sort);
+    }
+
+    private static int getGroupsSortingOption() {
+        System.out.println("Choose sorting option:");
+        System.out.print("1 - Sort by group identifier\n");
+        System.out.print("2 - Sort by group name \n");
+        System.out.print("3 - Sort by group capacity\n");
+        int i = 0;
         try {
-            List<List<Group>> groups = new GroupController().getGroupsByPageSize(PAGE_SIZE);
-            printGroupListByPage(0, groups);
-        } catch (IncorrectPageException e) {
-            System.out.println("Error:\n" + e.getMessage());
+            i = getIntFromKeyboard();
+            System.out.print("\n");
+        } catch (IncorrectInputException e) {
+            System.out.print("Error: \n");
+            System.out.print(e.getMessage());
+        }
+        if ((i > 0) && (i < 4))
+            return i;
+        else {
+            System.out.println("Please choose from options");
+            return getGroupsSortingOption();
         }
     }
 
-    private static void printGroupRatingDesc2(int groupId) {
+    private static void printGroups(int limit, int offset, int sortingOption) {
+        List<Group> groups = new GroupController().getGroupsSorted(limit, offset, sortingOption);
         GroupController groupController = new GroupController();
-        System.out.println(groupId + " raitings are:");
-        List<List<Student>> students = groupController.getStudentsByGroupByPageSize(PAGE_SIZE, groupId);
-        printStudentsListWithRatingDescByPage(0,students);
-    }
-
-    private static void printStudentsListWithRatingDescByPage(int page, List<List<Student>> students) {
-        if (page >= students.size() || page < 0)
-            throw new IncorrectPageException("Page " + (page+1) + " not found");
-        System.out.println("Students rating page number " + (page+1) + ":");
-        List<Student> studentsPage = students.get(page);
-        for (Student student : studentsPage) {
-            System.out.println(student.getFirstName()+" "+student.getLastName()+" with rating "+student.getRating());
-        }
-        System.out.println();
-        choosePageToPrintGroupRating(page,students);
-    }
-
-    private static void choosePageToPrintGroupRating(int page, List<List<Student>> students) {
-        PagingOptions chosenOption;
-        if (page == 0) {
-            if (page == students.size() - 1) {
-                System.out.println("It is the only page\n");
-                chosenOption = PagingOptions.Back;
-            } else {
-                chosenOption = chooseOptionWithoutPrevPage();
-            }
-        } else {
-            if (page == students.size() - 1) {
-                chosenOption = chooseOptionWithoutNextPage();
-            } else {
-                chosenOption = choosePagingOption();
-            }
-        }
-        switch (chosenOption) {
+        System.out.println("Groups: ");
+        groups.forEach(a -> System.out.println(a.getName() + " with identifier " + a.getId() + " " + groupController.getStudentsByGroup(a.getId()).size() + " students in this group"));
+        PagingOptions pagingOptions;
+        if (offset == 0)
+            pagingOptions = getPagingOptionWithoutPrevPageOption();
+        else pagingOptions = getPagingOption();
+        switch (pagingOptions) {
             case PrevPage:
-                printStudentsListWithRatingDescByPage(page-1,students);
+                try {
+                    printGroups(limit, offset - limit, sortingOption);
+                } catch (IncorrectPageException e) {
+                    System.out.println("There is no previous page");
+                    printGroups(limit, offset, sortingOption);
+                }
                 break;
             case NextPage:
-                printStudentsListWithRatingDescByPage(page+1,students);
-                break;
-            case Back:
+                try {
+                    printGroups(limit, offset + limit, sortingOption);
+                } catch (IncorrectPageException e) {
+                    System.out.println("There is no next page");
+                    printGroups(limit, offset, sortingOption);
+                }
                 break;
             case LogOut:
                 logOut();
@@ -164,56 +224,9 @@ public class TeacherMenu extends UserMenu {
                 exit();
                 break;
             default:
-                choosePageToPrintGroupRating(page,students);
+                break;
         }
     }
 
-    private static void printGroupListByPage(int page, List<List<Group>> groups) {
-        if (page >= groups.size() || page < 0)
-            throw new IncorrectPageException("Page " + (page + 1) + " not found");
-        System.out.println("Groups page number " + (page + 1) + ":");
-        List<Group> groupsPage = groups.get(page);
-        for (Group group : groupsPage) {
-            System.out.println(group.getName() + " with identifier " + group.getId());
-        }
-        System.out.println();
-        choosePageOfGroupsCollectionToPrint(page, groups);
-    }
-
-    private static void choosePageOfGroupsCollectionToPrint(int page, List<List<Group>> groups) {
-        PagingOptions chosenOption;
-        if (page == 0) {
-            if (page == groups.size() - 1) {
-                System.out.println("It is the only page\n");
-                chosenOption = PagingOptions.Back;
-            } else {
-                chosenOption = chooseOptionWithoutPrevPage();
-            }
-        } else {
-            if (page == groups.size() - 1) {
-                chosenOption = chooseOptionWithoutNextPage();
-            } else {
-                chosenOption = choosePagingOption();
-            }
-        }
-        switch (chosenOption) {
-            case PrevPage:
-                printGroupListByPage(page - 1, groups);
-                break;
-            case NextPage:
-                printGroupListByPage(page + 1, groups);
-                break;
-            case Back:
-                break;
-            case LogOut:
-                logOut();
-                break;
-            case Exit:
-                exit();
-                break;
-            default:
-                choosePageOfGroupsCollectionToPrint(page, groups);
-        }
-    }
 }
 

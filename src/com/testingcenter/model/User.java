@@ -1,5 +1,7 @@
 package com.testingcenter.model;
 
+import java.util.Calendar;
+
 /**
  * Model class for user
  *
@@ -10,6 +12,26 @@ public class User {
     private String lastName;
     private String login;
     private String password;
+    private Calendar dateOfBirth;
+    private String middleName;
+
+    /**
+     * Method to get date of birth of user
+     *
+     * @return date of birth of user
+     */
+    public Calendar getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    /**
+     * Method to get middle name of user
+     *
+     * @return Middle name of user
+     */
+    public String getMiddleName() {
+        return middleName;
+    }
 
     /**
      * Method to get first name of user
@@ -52,12 +74,16 @@ public class User {
      *
      * @param firstName first name of user
      * @param lastName  last name of user
+     * @param middleName middle name of user
+     * @param dateOfBirth date of birth of user
      * @param login     login of user
      * @param password  password of user
      */
-    public User(String firstName, String lastName, String login, String password) {
+    public User(String firstName, String lastName, String middleName, Calendar dateOfBirth, String login, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.middleName = middleName;
+        this.dateOfBirth = dateOfBirth;
         this.login = login;
         this.password = password;
     }
