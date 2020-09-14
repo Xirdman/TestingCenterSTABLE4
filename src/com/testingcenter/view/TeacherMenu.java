@@ -6,6 +6,8 @@ import com.testingcenter.controller.exceptions.GroupNotFoundException;
 import com.testingcenter.controller.exceptions.IncorrectInputException;
 import com.testingcenter.controller.exceptions.IncorrectPageException;
 import com.testingcenter.model.*;
+import com.testingcenter.model.sortingoptions.GroupSortingOption;
+import com.testingcenter.model.sortingoptions.TestsSortingOption;
 
 import java.util.List;
 import java.util.Scanner;
@@ -82,7 +84,7 @@ public class TeacherMenu extends UserMenu {
     }
 
     private static void displayTeachersTestsWithPages(Teacher teacher) {
-        int sort = getTestsSortingOption();
+        TestsSortingOption sort = getTestsSortingOption();
         printSearchedTestsByTeacher(PAGE_SIZE, 0, teacher, sort);
     }
 
@@ -127,7 +129,7 @@ public class TeacherMenu extends UserMenu {
         }
     }
 
-    private static void printSearchedTestsByTeacher(int limit, int offset, Teacher teacher, int usersSortingOption) throws IncorrectPageException {
+    private static void printSearchedTestsByTeacher(int limit, int offset, Teacher teacher, TestsSortingOption usersSortingOption) throws IncorrectPageException {
         List<Test> tests = new TestController().getTeacherTests(limit, offset, teacher, usersSortingOption);
         System.out.println("Tests of teacher :");
         tests.forEach(a -> System.out.println(a.getName() + " has coefficient to pass " + a.getCoefficientToPass() +
@@ -166,32 +168,28 @@ public class TeacherMenu extends UserMenu {
     }
 
     private static void printGroupsWithPageSize() {
-        int sort = getGroupsSortingOption();
+        GroupSortingOption sort = getGroupsSortingOption();
         printGroups(PAGE_SIZE, 0, sort);
     }
 
-    private static int getGroupsSortingOption() {
+    private static GroupSortingOption getGroupsSortingOption() {
         System.out.println("Choose sorting option:");
-        System.out.print("1 - Sort by group identifier\n");
-        System.out.print("2 - Sort by group name \n");
-        System.out.print("3 - Sort by group capacity\n");
-        int i = 0;
-        try {
-            i = getIntFromKeyboard();
-            System.out.print("\n");
-        } catch (IncorrectInputException e) {
-            System.out.print("Error: \n");
-            System.out.print(e.getMessage());
+        int j = 0;
+        for (GroupSortingOption option : GroupSortingOption.values()) {
+            System.out.println(j + " - to " + option.getText());
+            j++;
         }
-        if ((i > 0) && (i < 4))
-            return i;
-        else {
+        int i = getIntFromKeyboard();
+        System.out.print("\n");
+        try {
+            return GroupSortingOption.values()[i];
+        } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("Please choose from options");
             return getGroupsSortingOption();
         }
     }
 
-    private static void printGroups(int limit, int offset, int sortingOption) {
+    private static void printGroups(int limit, int offset, GroupSortingOption sortingOption) {
         List<Group> groups = new GroupController().getGroupsSorted(limit, offset, sortingOption);
         GroupController groupController = new GroupController();
         System.out.println("Groups: ");

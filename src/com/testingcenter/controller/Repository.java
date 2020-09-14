@@ -67,7 +67,7 @@ public class Repository {
         users.add(new Admin("Vladimir", "Putin", "Igorevich", new GregorianCalendar(1965, 5, 4), "admin", "admin"));
 
         for (int i = 0; i < 30; i++)
-            users.add(new User("TestDummy" + i, "TestDummy" + i, "TestDummy" + i, new GregorianCalendar(1999, 0, i), "", ""));
+            users.add(new User("TestDummy" + i, "TestDummy" + (30-i), "TestDummy" + (i%5), new GregorianCalendar(1999, 0, i), "", ""));
         tests = new ArrayList<>();
         Test test1 = new Test("JavaSE", teacher1);
         Test test2 = new Test("JavaEE", teacher1);

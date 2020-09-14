@@ -5,6 +5,7 @@ import com.testingcenter.controller.exceptions.IncorrectInputException;
 import com.testingcenter.controller.exceptions.IncorrectPageException;
 import com.testingcenter.controller.exceptions.NoElementsFoundException;
 import com.testingcenter.model.User;
+import com.testingcenter.model.sortingoptions.UsersSortingOption;
 import com.testingcenter.view.UserMenu;
 
 import java.util.Calendar;
@@ -67,7 +68,7 @@ public class UsersSearchMenu extends UserMenu {
     private static void startSearchUsersByFirstName() {
         System.out.println("Enter first name to search");
         String searchedFirstName = getStringFromKeyboard();
-        int optionCode = getUsersSortingOption();
+        UsersSortingOption optionCode = getUsersSortingOption();
         try {
             printSearchUsersByFirstNamePage(PAGE_SIZE, 0, searchedFirstName, optionCode);
         } catch (NoElementsFoundException e) {
@@ -76,7 +77,7 @@ public class UsersSearchMenu extends UserMenu {
         }
     }
 
-    private static void printSearchUsersByFirstNamePage(int limit, int offset, String firstName, int usersSortingOption) throws IncorrectPageException {
+    private static void printSearchUsersByFirstNamePage(int limit, int offset, String firstName, UsersSortingOption usersSortingOption) throws IncorrectPageException {
         List<User> users = new UsersSearchController(usersSortingOption).searchByFirstName(limit, offset, firstName);
         System.out.println("Users with first name " + firstName + " found:");
         users.forEach((a) -> System.out.println(a.getFirstName() + " "
@@ -120,7 +121,7 @@ public class UsersSearchMenu extends UserMenu {
     private static void startSearchUsersByLastName() {
         System.out.println("Enter last name to search");
         String searchedLastName = getStringFromKeyboard();
-        int optionCode = getUsersSortingOption();
+        UsersSortingOption optionCode = getUsersSortingOption();
         try {
             printSearchUsersByLastNamePage(PAGE_SIZE, 0, searchedLastName, optionCode);
         } catch (NoElementsFoundException e) {
@@ -130,7 +131,7 @@ public class UsersSearchMenu extends UserMenu {
 
     }
 
-    private static void printSearchUsersByLastNamePage(int limit, int offset, String lastName, int usersSortingOption) throws IncorrectPageException {
+    private static void printSearchUsersByLastNamePage(int limit, int offset, String lastName, UsersSortingOption usersSortingOption) throws IncorrectPageException {
         List<User> users = new UsersSearchController(usersSortingOption).searchByLastName(limit, offset, lastName);
         System.out.println("Users with last name " + lastName + " found:");
         users.forEach((a) -> System.out.println(a.getFirstName() + " "
@@ -174,7 +175,7 @@ public class UsersSearchMenu extends UserMenu {
     private static void startSearchUsersByMiddleName() {
         System.out.println("Enter middle name to search");
         String searchedMiddleName = getStringFromKeyboard();
-        int optionCode = getUsersSortingOption();
+        UsersSortingOption optionCode = getUsersSortingOption();
         try {
             printSearchUsersByMiddleNamePage(PAGE_SIZE, 0, searchedMiddleName, optionCode);
         } catch (NoElementsFoundException e) {
@@ -183,7 +184,7 @@ public class UsersSearchMenu extends UserMenu {
         }
     }
 
-    private static void printSearchUsersByMiddleNamePage(int limit, int offset, String middleName, int usersSortingOption) throws IncorrectPageException {
+    private static void printSearchUsersByMiddleNamePage(int limit, int offset, String middleName, UsersSortingOption usersSortingOption) throws IncorrectPageException {
         List<User> users = new UsersSearchController(usersSortingOption).searchByMiddleName(limit, offset, middleName);
         System.out.println("Users with middle name " + middleName + " found:");
         users.forEach((a) -> System.out.println(a.getFirstName() + " "

@@ -5,6 +5,7 @@ import com.testingcenter.controller.exceptions.IncorrectInputException;
 import com.testingcenter.controller.exceptions.IncorrectPageException;
 import com.testingcenter.model.Admin;
 import com.testingcenter.model.User;
+import com.testingcenter.model.sortingoptions.UsersSortingOption;
 
 import java.util.List;
 
@@ -58,11 +59,11 @@ public class AdminMenu extends UserMenu {
     }
 
     private static void showUsersListByPage() {
-        int sortOpt = getUsersSortingOption();
+        UsersSortingOption sortOpt = getUsersSortingOption();
         printPageOfUsers(PAGE_SIZE, 0, sortOpt);
     }
 
-    private static void printPageOfUsers(int limit, int offset, int sortingOptions) {
+    private static void printPageOfUsers(int limit, int offset, UsersSortingOption sortingOptions) {
         List<User> users = new UsersSearchController(sortingOptions).searchByFirstName(limit, offset, "");
         System.out.println("Users :");
         users.forEach(a -> System.out.println(a.getFirstName() + " " + a.getLastName() + " " + a.getMiddleName()));

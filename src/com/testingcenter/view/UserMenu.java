@@ -1,6 +1,8 @@
 package com.testingcenter.view;
 
 import com.testingcenter.controller.exceptions.IncorrectInputException;
+import com.testingcenter.model.sortingoptions.TestsSortingOption;
+import com.testingcenter.model.sortingoptions.UsersSortingOption;
 import com.testingcenter.view.searchingmenus.TestsSearchMenu;
 import com.testingcenter.view.searchingmenus.UsersSearchMenu;
 
@@ -13,7 +15,7 @@ import java.util.Scanner;
  */
 public class UserMenu {
     /**
-     * Enum to help work with pages
+     * enum to help work with pages
      */
     protected enum PagingOptions {
         Exit,
@@ -91,15 +93,17 @@ public class UserMenu {
      * Method to get integer from keyboard
      *
      * @return integer from keyboard
-     * @throws IncorrectInputException if input from keyboard wasn't integer value
      */
-    protected static int getIntFromKeyboard() throws IncorrectInputException {
+    protected static int getIntFromKeyboard() {
         Scanner scanner = new Scanner(System.in);
         String result = scanner.next();
         try {
             return Integer.parseInt(result);
         } catch (NumberFormatException e) {
-            throw new IncorrectInputException("incorrect input");
+            System.out.println("incorrect input");
+            return getIntFromKeyboard();
+        } finally {
+            System.out.println("\n");
         }
     }
 
@@ -179,23 +183,18 @@ public class UserMenu {
      *
      * @return option to sort users
      */
-    protected static int getUsersSortingOption() {
+    protected static UsersSortingOption getUsersSortingOption() {
         System.out.println("Choose sorting option:");
-        System.out.print("1 - Sort by first name\n");
-        System.out.print("2 - Sort by last name \n");
-        System.out.print("3 - Sort by middle name \n");
-        System.out.print("4 - Sort by date of birth name \n");
-        int i = 0;
-        try {
-            i = getIntFromKeyboard();
-            System.out.print("\n");
-        } catch (IncorrectInputException e) {
-            System.out.print("Error: \n");
-            System.out.println(e.getMessage());
+        int j = 0;
+        for (UsersSortingOption option : UsersSortingOption.values()) {
+            System.out.println(j + " - to " + option.getText());
+            j++;
         }
-        if ((i > 0) && (i < 5))
-            return i;
-        else {
+        int i = getIntFromKeyboard();
+        System.out.print("\n");
+        try {
+            return UsersSortingOption.values()[i];
+        } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("Please choose from options");
             return getUsersSortingOption();
         }
@@ -206,22 +205,18 @@ public class UserMenu {
      *
      * @return option to sort tests
      */
-    protected static int getTestsSortingOption() {
+    protected static TestsSortingOption getTestsSortingOption() {
         System.out.println("Choose sorting option:");
-        System.out.print("1 - Sort by test name\n");
-        System.out.print("2 - Sort by coefficient name \n");
-        System.out.print("3 - Sort by teachers last name \n");
-        int i = 0;
-        try {
-            i = getIntFromKeyboard();
-            System.out.print("\n");
-        } catch (IncorrectInputException e) {
-            System.out.print("Error: \n");
-            System.out.print(e.getMessage());
+        int j = 0;
+        for (TestsSortingOption option : TestsSortingOption.values()) {
+            System.out.println(j + " - to " + option.getText());
+            j++;
         }
-        if ((i > 0) && (i < 4))
-            return i;
-        else {
+        int i = getIntFromKeyboard();
+        System.out.print("\n");
+        try {
+            return TestsSortingOption.values()[i];
+        } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("Please choose from options");
             return getTestsSortingOption();
         }

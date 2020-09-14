@@ -3,6 +3,7 @@ package com.testingcenter.controller;
 import com.testingcenter.controller.exceptions.IncorrectPageException;
 import com.testingcenter.controller.exceptions.NoTestsForTeacherException;
 import com.testingcenter.model.*;
+import com.testingcenter.model.sortingoptions.TestsSortingOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class TestController {
      * @return page of teachers tests
      * @throws IncorrectPageException when method cant form a page
      */
-    public List<Test> getTeacherTests(int limit, int offset, Teacher teacher, int sortingCode) throws IncorrectPageException {
+    public List<Test> getTeacherTests(int limit, int offset, Teacher teacher, TestsSortingOption sortingCode) throws IncorrectPageException {
         List<Test> teacherTests = getTeachersTests(teacher);
         teacherTests = new TestsSearchController(sortingCode).sortTests(teacherTests).stream().skip(offset).limit(limit).collect(Collectors.toList());
         if (teacherTests.isEmpty())

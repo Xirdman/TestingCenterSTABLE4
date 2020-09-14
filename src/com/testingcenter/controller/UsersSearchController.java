@@ -3,6 +3,7 @@ package com.testingcenter.controller;
 import com.testingcenter.controller.exceptions.IncorrectPageException;
 import com.testingcenter.controller.exceptions.NoElementsFoundException;
 import com.testingcenter.model.User;
+import com.testingcenter.model.sortingoptions.UsersSortingOption;
 
 import java.util.Calendar;
 import java.util.List;
@@ -12,57 +13,31 @@ import java.util.stream.Collectors;
  * Class to search in students
  */
 public class UsersSearchController {
-    private enum SortingOptions {
-        Sort_Users_By_First_Name,
-        Sort_Users_By_Last_Name,
-        Sort_Users_By_Middle_Name,
-        Sort_Users_By_Date_Of_Birth_Name,
-        Default
-    }
-
-    private SortingOptions sortingOption;
+    private UsersSortingOption sortOption;
 
     /**
      * Constructor of class
-     *
-     * @param searchingOptionCode parameter to sort result. 1- to sort users by first name. 2- to sort users by last name. 3- to sort users by middle name. 4 - to sort users by date of birth
+     * @param option option to sort resulting collection of users
      */
-    public UsersSearchController(int searchingOptionCode) {
-        switch (searchingOptionCode) {
-            case 1:
-                sortingOption = SortingOptions.Sort_Users_By_First_Name;
-                break;
-            case 2:
-                sortingOption = SortingOptions.Sort_Users_By_Last_Name;
-                break;
-            case 3:
-                sortingOption = SortingOptions.Sort_Users_By_Middle_Name;
-                break;
-            case 4:
-                sortingOption = SortingOptions.Sort_Users_By_Date_Of_Birth_Name;
-                break;
-            default:
-                sortingOption = SortingOptions.Default;
-                break;
-        }
-
+    public UsersSearchController(UsersSortingOption option) {
+        sortOption = option;
     }
 
     private List<User> sortUsers(List<User> usersToSort) {
-        switch (sortingOption) {
-            case Sort_Users_By_Last_Name:
+        switch (sortOption) {
+            case SORT_USERS_BY_LAST_NAME:
                 return usersToSort.stream()
                         .sorted((a, b) -> a.getLastName().compareTo(b.getLastName()))
                         .collect(Collectors.toList());
-            case Sort_Users_By_First_Name:
+            case SORT_USERS_BY_FIRST_NAME:
                 return usersToSort.stream()
                         .sorted((a, b) -> a.getFirstName().compareTo(b.getFirstName()))
                         .collect(Collectors.toList());
-            case Sort_Users_By_Middle_Name:
+            case SORT_USERS_BY_MIDDLE_NAME:
                 return usersToSort.stream()
                         .sorted((a, b) -> a.getMiddleName().compareTo(b.getMiddleName()))
                         .collect(Collectors.toList());
-            case Sort_Users_By_Date_Of_Birth_Name:
+            case SORT_USERS_BY_DATE_OF_BIRTH:
                 return usersToSort.stream()
                         .sorted((a, b) -> a.getDateOfBirth().compareTo(b.getDateOfBirth()))
                         .collect(Collectors.toList());
@@ -233,3 +208,4 @@ public class UsersSearchController {
         return searchedUsers;
     }
 }
+

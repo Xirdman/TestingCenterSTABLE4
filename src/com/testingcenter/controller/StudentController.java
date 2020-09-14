@@ -5,6 +5,7 @@ import com.testingcenter.controller.exceptions.IncorrectInputException;
 import com.testingcenter.controller.exceptions.IncorrectPageException;
 import com.testingcenter.controller.exceptions.StudentTestNotFoundException;
 import com.testingcenter.model.*;
+import com.testingcenter.model.sortingoptions.TestsSortingOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ public class StudentController {
      * @return page of tests assigned to student
      * @throws IncorrectPageException when method cant form a page
      */
-    public List<Test> getStudentTests(int limit, int offset, Student student, int sortingOption)throws IncorrectPageException {
+    public List<Test> getStudentTests(int limit, int offset, Student student, TestsSortingOption sortingOption)throws IncorrectPageException {
         List<Test> tests = getStudentTests(student);
         tests = new TestsSearchController(sortingOption).sortTests(tests).stream().skip(offset).limit(limit).collect(Collectors.toList());
         if (tests.isEmpty())

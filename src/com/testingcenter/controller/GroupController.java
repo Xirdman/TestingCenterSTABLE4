@@ -5,6 +5,7 @@ import com.testingcenter.controller.exceptions.IncorrectPageException;
 import com.testingcenter.model.Group;
 import com.testingcenter.model.Student;
 import com.testingcenter.model.User;
+import com.testingcenter.model.sortingoptions.GroupSortingOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,8 +91,8 @@ public class GroupController {
         return Repository.getGroups();
     }
 
-    public List<Group> getGroupsSorted(int limit, int offset, int codeOfSorting) {
-        List<Group> groups = new GroupSorter().sortGroups(getGroups(), codeOfSorting).subList(offset, limit);
+    public List<Group> getGroupsSorted(int limit, int offset, GroupSortingOption groupSortingOption) {
+        List<Group> groups = new GroupSorter().sortGroups(getGroups(), groupSortingOption).subList(offset, limit);
         if (groups.isEmpty())
             throw new IncorrectPageException("No such page");
         return groups;

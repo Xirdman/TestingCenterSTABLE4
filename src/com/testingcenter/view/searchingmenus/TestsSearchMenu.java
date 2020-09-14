@@ -5,6 +5,7 @@ import com.testingcenter.controller.exceptions.IncorrectInputException;
 import com.testingcenter.controller.exceptions.IncorrectPageException;
 import com.testingcenter.controller.exceptions.NoElementsFoundException;
 import com.testingcenter.model.Test;
+import com.testingcenter.model.sortingoptions.TestsSortingOption;
 import com.testingcenter.view.UserMenu;
 
 import java.util.List;
@@ -63,7 +64,7 @@ public class TestsSearchMenu extends UserMenu {
     private static void searchTestsWithName() {
         System.out.println("Enter test name to search");
         String searchedFirstName = getStringFromKeyboard();
-        int optionCode = getTestsSortingOption();
+        TestsSortingOption optionCode = getTestsSortingOption();
         try {
             printSearchedTestsByTestName(PAGE_SIZE, 0, searchedFirstName, optionCode);
         } catch (NoElementsFoundException e) {
@@ -72,8 +73,8 @@ public class TestsSearchMenu extends UserMenu {
         }
     }
 
-    private static void printSearchedTestsByTestName(int limit, int offset, String testName, int usersSortingOption) throws IncorrectPageException {
-        List<Test> tests = new TestsSearchController(usersSortingOption).searchTestsByName(limit, offset, testName);
+    private static void printSearchedTestsByTestName(int limit, int offset, String testName, TestsSortingOption testsSortingOption) throws IncorrectPageException {
+        List<Test> tests = new TestsSearchController(testsSortingOption).searchTestsByName(limit, offset, testName);
         System.out.println("Tests with name " + testName + " found:");
         tests.forEach(a -> System.out.println(a.getName() + " has coefficient to pass " + a.getCoefficientToPass() +
                 " from teacher " + a.getTeacher().getLastName() + " " + a.getTeacher().getFirstName() + " " + a.getTeacher().getMiddleName()));
@@ -85,18 +86,18 @@ public class TestsSearchMenu extends UserMenu {
         switch (pagingOption) {
             case PrevPage:
                 try {
-                    printSearchedTestsByTestName(limit, offset - limit, testName, usersSortingOption);
+                    printSearchedTestsByTestName(limit, offset - limit, testName, testsSortingOption);
                 } catch (IncorrectPageException e) {
                     System.out.println("Cant back to previous page\n");
-                    printSearchedTestsByTestName(limit, offset, testName, usersSortingOption);
+                    printSearchedTestsByTestName(limit, offset, testName, testsSortingOption);
                 }
                 break;
             case NextPage:
                 try {
-                    printSearchedTestsByTestName(limit, offset + limit, testName, usersSortingOption);
+                    printSearchedTestsByTestName(limit, offset + limit, testName, testsSortingOption);
                 } catch (IncorrectPageException e) {
                     System.out.println("Cant go to next page\n");
-                    printSearchedTestsByTestName(limit, offset, testName, usersSortingOption);
+                    printSearchedTestsByTestName(limit, offset, testName, testsSortingOption);
                 }
                 break;
             case LogOut:
@@ -123,7 +124,7 @@ public class TestsSearchMenu extends UserMenu {
     private static void searchTestsWithCoefficient() {
         System.out.println("Enter test coefficient to search");
         double coefficient = getDoubleToSearch();
-        int optionCode = getTestsSortingOption();
+        TestsSortingOption optionCode = getTestsSortingOption();
         try {
             printSearchedTestsByCoefficient(PAGE_SIZE, 0, coefficient, optionCode);
         } catch (NoElementsFoundException e) {
@@ -132,8 +133,8 @@ public class TestsSearchMenu extends UserMenu {
         }
     }
 
-    private static void printSearchedTestsByCoefficient(int limit, int offset, double testCoefficient, int usersSortingOption) throws IncorrectPageException {
-        List<Test> tests = new TestsSearchController(usersSortingOption).searchTestByCoefficient(limit, offset, testCoefficient);
+    private static void printSearchedTestsByCoefficient(int limit, int offset, double testCoefficient,TestsSortingOption testsSortingOption) throws IncorrectPageException {
+        List<Test> tests = new TestsSearchController(testsSortingOption).searchTestByCoefficient(limit, offset, testCoefficient);
         System.out.println("Tests with coefficient " + testCoefficient + " found:");
         tests.forEach(a -> System.out.println(a.getName() + " has coefficient to pass " + a.getCoefficientToPass() +
                 " from teacher " + a.getTeacher().getLastName() + " " + a.getTeacher().getFirstName() + " " + a.getTeacher().getMiddleName()));
@@ -145,18 +146,18 @@ public class TestsSearchMenu extends UserMenu {
         switch (pagingOption) {
             case PrevPage:
                 try {
-                    printSearchedTestsByCoefficient(limit, offset - limit, testCoefficient, usersSortingOption);
+                    printSearchedTestsByCoefficient(limit, offset - limit, testCoefficient, testsSortingOption);
                 } catch (IncorrectPageException e) {
                     System.out.println("Cant back to previous page\n");
-                    printSearchedTestsByCoefficient(limit, offset, testCoefficient, usersSortingOption);
+                    printSearchedTestsByCoefficient(limit, offset, testCoefficient, testsSortingOption);
                 }
                 break;
             case NextPage:
                 try {
-                    printSearchedTestsByCoefficient(limit, offset + limit, testCoefficient, usersSortingOption);
+                    printSearchedTestsByCoefficient(limit, offset + limit, testCoefficient, testsSortingOption);
                 } catch (IncorrectPageException e) {
                     System.out.println("Cant go to next page\n");
-                    printSearchedTestsByCoefficient(limit, offset, testCoefficient, usersSortingOption);
+                    printSearchedTestsByCoefficient(limit, offset, testCoefficient, testsSortingOption);
                 }
                 break;
             case LogOut:
@@ -173,7 +174,7 @@ public class TestsSearchMenu extends UserMenu {
     private static void searchTestsWithTeacherLastName() {
         System.out.println("Enter test coefficient to search");
         String teacherLastName = getStringFromKeyboard();
-        int optionCode = getTestsSortingOption();
+        TestsSortingOption optionCode = getTestsSortingOption();
         try {
             printSearchedTestsByTeacherLastName(PAGE_SIZE, 0, teacherLastName, optionCode);
         } catch (NoElementsFoundException e) {
@@ -182,8 +183,8 @@ public class TestsSearchMenu extends UserMenu {
         }
     }
 
-    private static void printSearchedTestsByTeacherLastName(int limit, int offset, String teacherLastName, int usersSortingOption) throws IncorrectPageException {
-        List<Test> tests = new TestsSearchController(usersSortingOption).searchTestsByTeacherLastName(limit, offset, teacherLastName);
+    private static void printSearchedTestsByTeacherLastName(int limit, int offset, String teacherLastName, TestsSortingOption testsSortingOption) throws IncorrectPageException {
+        List<Test> tests = new TestsSearchController(testsSortingOption).searchTestsByTeacherLastName(limit, offset, teacherLastName);
         System.out.println("Tests of teacher with last name " + teacherLastName + " found:");
         tests.forEach(a -> System.out.println(a.getName() + " has coefficient to pass " + a.getCoefficientToPass() +
                 " from teacher " + a.getTeacher().getLastName() + " " + a.getTeacher().getFirstName() + " " + a.getTeacher().getMiddleName()));
@@ -195,18 +196,18 @@ public class TestsSearchMenu extends UserMenu {
         switch (pagingOption) {
             case PrevPage:
                 try {
-                    printSearchedTestsByTeacherLastName(limit, offset - limit, teacherLastName, usersSortingOption);
+                    printSearchedTestsByTeacherLastName(limit, offset - limit, teacherLastName, testsSortingOption);
                 } catch (IncorrectPageException e) {
                     System.out.println("Cant back to previous page\n");
-                    printSearchedTestsByTeacherLastName(limit, offset, teacherLastName, usersSortingOption);
+                    printSearchedTestsByTeacherLastName(limit, offset, teacherLastName, testsSortingOption);
                 }
                 break;
             case NextPage:
                 try {
-                    printSearchedTestsByTeacherLastName(limit, offset + limit, teacherLastName, usersSortingOption);
+                    printSearchedTestsByTeacherLastName(limit, offset + limit, teacherLastName, testsSortingOption);
                 } catch (IncorrectPageException e) {
                     System.out.println("Cant go to next page\n");
-                    printSearchedTestsByTeacherLastName(limit, offset, teacherLastName, usersSortingOption);
+                    printSearchedTestsByTeacherLastName(limit, offset, teacherLastName, testsSortingOption);
                 }
                 break;
             case LogOut:

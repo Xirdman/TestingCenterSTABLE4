@@ -3,6 +3,7 @@ package com.testingcenter.controller;
 import com.testingcenter.controller.exceptions.IncorrectPageException;
 import com.testingcenter.controller.exceptions.NoElementsFoundException;
 import com.testingcenter.model.Test;
+import com.testingcenter.model.sortingoptions.TestsSortingOption;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,35 +12,16 @@ import java.util.stream.Collectors;
  * Class to Search in tests and get result
  */
 public class TestsSearchController {
-    private enum SortingOptions {
-        Sort_Tests_By_Test_Name,
-        Sort_Tests_By_Coefficient_To_Pass,
-        Sort_Tests_Teacher_Last_Name,
-        Default
-    }
 
-    private SortingOptions sortingOption;
+    private TestsSortingOption sortingOption;
 
     /**
      * Constructor of class
      *
-     * @param searchingOptionCode option to sort result 1- to sort by name. 2- to sort by coefficient of test, 3- to sort by teachers name
+     * @param sortingOption option to sort resulting collection of tests
      */
-    public TestsSearchController(int searchingOptionCode) {
-        switch (searchingOptionCode) {
-            case 1:
-                sortingOption = SortingOptions.Sort_Tests_By_Test_Name;
-                break;
-            case 2:
-                sortingOption = SortingOptions.Sort_Tests_By_Coefficient_To_Pass;
-                break;
-            case 3:
-                sortingOption = SortingOptions.Sort_Tests_Teacher_Last_Name;
-                break;
-            default:
-                sortingOption = SortingOptions.Default;
-                break;
-        }
+    public TestsSearchController(TestsSortingOption sortingOption) {
+        this.sortingOption = sortingOption;
 
     }
 
@@ -51,15 +33,15 @@ public class TestsSearchController {
      */
     public List<Test> sortTests(List<Test> testsToSort) {
         switch (sortingOption) {
-            case Sort_Tests_By_Coefficient_To_Pass:
+            case SORT_TESTS_BY_COEFFICIENT_TO_PASS:
                 return testsToSort.stream()
                         .sorted((a, b) -> Double.compare(a.getCoefficientToPass(), b.getCoefficientToPass()))
                         .collect(Collectors.toList());
-            case Sort_Tests_By_Test_Name:
+            case SORT_TESTS_BY_NAME:
                 return testsToSort.stream()
                         .sorted((a, b) -> a.getName().compareTo(b.getName()))
                         .collect(Collectors.toList());
-            case Sort_Tests_Teacher_Last_Name:
+            case SORT_TESTS_BY_TEACHER_LAST_NAME:
                 return testsToSort.stream()
                         .sorted((a, b) -> a.getTeacher().getLastName().compareTo(b.getTeacher().getLastName()))
                         .collect(Collectors.toList());
@@ -78,11 +60,12 @@ public class TestsSearchController {
 
     /**
      * Method to search tests by name
+     *
      * @param limit           number of records on page
      * @param offset          offset from start
      * @param searchParameter name of test
      * @return page of searched result
-     * @throws IncorrectPageException thrown when cant form a page
+     * @throws IncorrectPageException   thrown when cant form a page
      * @throws NoElementsFoundException thrown when there is no tests with such parameter
      */
     public List<Test> searchTestsByName(int limit, int offset, String searchParameter) throws IncorrectPageException, NoElementsFoundException {
@@ -102,13 +85,15 @@ public class TestsSearchController {
             throw new NoElementsFoundException("No tests found with coefficient - " + coefficient);
         return tests;
     }
+
     /**
      * Method to search tests by coefficient to pass
+     *
      * @param limit           number of records on page
      * @param offset          offset from start
      * @param searchParameter coefficient to pass test
      * @return page of searched result
-     * @throws IncorrectPageException thrown when cant form a page
+     * @throws IncorrectPageException   thrown when cant form a page
      * @throws NoElementsFoundException thrown when there is no tests with such parameter
      */
     public List<Test> searchTestByCoefficient(int limit, int offset, double searchParameter) {
@@ -126,13 +111,15 @@ public class TestsSearchController {
             throw new NoElementsFoundException("No tests with teacher last name " + teacherLastName + " not found");
         return tests;
     }
+
     /**
      * Method to search tests by teacher last name
+     *
      * @param limit           number of records on page
      * @param offset          offset from start
      * @param searchParameter last name of tests teacher
      * @return page of searched result
-     * @throws IncorrectPageException thrown when cant form a page
+     * @throws IncorrectPageException   thrown when cant form a page
      * @throws NoElementsFoundException thrown when there is no tests with such parameter
      */
     public List<Test> searchTestsByTeacherLastName(int limit, int offset, String searchParameter) {

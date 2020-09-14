@@ -8,6 +8,7 @@ import com.testingcenter.controller.exceptions.IncorrectInputException;
 import com.testingcenter.controller.exceptions.IncorrectPageException;
 import com.testingcenter.controller.exceptions.StudentTestNotFoundException;
 import com.testingcenter.model.*;
+import com.testingcenter.model.sortingoptions.TestsSortingOption;
 
 import java.util.Arrays;
 import java.util.List;
@@ -186,12 +187,12 @@ public class StudentMenu extends UserMenu {
     }
 
     private static void showTestsCollectionByPage(Student student) {
-        int sort = getTestsSortingOption();
+        TestsSortingOption sort = getTestsSortingOption();
         printTestsWithPage(PAGE_SIZE, 0, student, sort);
     }
 
-    private static void printTestsWithPage(int limit, int offset, Student student, int usersSortingOption) throws IncorrectPageException {
-        List<Test> tests = new StudentController().getStudentTests(limit, offset, student, usersSortingOption);
+    private static void printTestsWithPage(int limit, int offset, Student student, TestsSortingOption testsSortingOption) throws IncorrectPageException {
+        List<Test> tests = new StudentController().getStudentTests(limit, offset, student, testsSortingOption);
         System.out.println("Tests assigned to student " + student.getLastName() + " " + student.getFirstName() + " are:");
         tests.forEach(a -> System.out.println(a.getName() + " has coefficient to pass " + a.getCoefficientToPass() +
                 " from teacher " + a.getTeacher().getLastName() + " " + a.getTeacher().getFirstName() + " " + a.getTeacher().getMiddleName()));
@@ -203,27 +204,27 @@ public class StudentMenu extends UserMenu {
         switch (pagingOption) {
             case PrevPage:
                 try {
-                    printTestsWithPage(limit, offset - limit, student, usersSortingOption);
+                    printTestsWithPage(limit, offset - limit, student, testsSortingOption);
                 } catch (IncorrectPageException e) {
                     System.out.println("Cant back to previous page\n");
-                    printTestsWithPage(limit, offset, student, usersSortingOption);
+                    printTestsWithPage(limit, offset, student, testsSortingOption);
                 }
                 break;
             case NextPage:
                 try {
-                    printTestsWithPage(limit, offset + limit, student, usersSortingOption);
+                    printTestsWithPage(limit, offset + limit, student, testsSortingOption);
                 } catch (IncorrectPageException e) {
                     System.out.println("Cant go to next page\n");
-                    printTestsWithPage(limit, offset, student, usersSortingOption);
+                    printTestsWithPage(limit, offset, student, testsSortingOption);
                 }
                 break;
             case LogOut:
                 logOut();
                 break;
-            case Back:
-                break;
             case Exit:
                 exit();
+                break;
+            default:
                 break;
         }
     }

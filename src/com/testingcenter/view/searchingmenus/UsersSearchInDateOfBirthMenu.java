@@ -5,6 +5,7 @@ import com.testingcenter.controller.exceptions.IncorrectInputException;
 import com.testingcenter.controller.exceptions.IncorrectPageException;
 import com.testingcenter.controller.exceptions.NoElementsFoundException;
 import com.testingcenter.model.User;
+import com.testingcenter.model.sortingoptions.UsersSortingOption;
 import com.testingcenter.view.UserMenu;
 
 import java.util.Calendar;
@@ -72,7 +73,7 @@ public class UsersSearchInDateOfBirthMenu extends UserMenu {
     private static void searchInDayOfBirth() {
         System.out.println("Enter day of birth to search");
         int dayToSearch = getIntToSearch();
-        int optionCode = getUsersSortingOption();
+        UsersSortingOption optionCode = getUsersSortingOption();
         try {
             printSearchUsersByDayOfBirthPage(PAGE_SIZE, 0, dayToSearch, optionCode);
         } catch (NoElementsFoundException e) {
@@ -81,7 +82,7 @@ public class UsersSearchInDateOfBirthMenu extends UserMenu {
         }
     }
 
-    private static void printSearchUsersByDayOfBirthPage(int limit, int offset, int dayOfBirth, int usersSortingOption) throws IncorrectPageException {
+    private static void printSearchUsersByDayOfBirthPage(int limit, int offset, int dayOfBirth, UsersSortingOption usersSortingOption) throws IncorrectPageException {
         List<User> users = new UsersSearchController(usersSortingOption).searchByDayOfBirth(limit, offset, dayOfBirth);
         System.out.println("Users with day of birth " + dayOfBirth + " found:");
         users.forEach((a) -> System.out.println(a.getFirstName() + " "
@@ -125,7 +126,7 @@ public class UsersSearchInDateOfBirthMenu extends UserMenu {
     private static void searchInMonthOfBirth() {
         System.out.println("Enter month of birth to search");
         int monthToSearch = getIntToSearch();
-        int optionCode = getUsersSortingOption();
+        UsersSortingOption optionCode = getUsersSortingOption();
         try {
             printSearchUsersByMonthOfBirthPage(PAGE_SIZE, 0, monthToSearch, optionCode);
         } catch (NoElementsFoundException e) {
@@ -134,7 +135,7 @@ public class UsersSearchInDateOfBirthMenu extends UserMenu {
         }
     }
 
-    private static void printSearchUsersByMonthOfBirthPage(int limit, int offset, int monthToSearch, int usersSortingOption) throws IncorrectPageException {
+    private static void printSearchUsersByMonthOfBirthPage(int limit, int offset, int monthToSearch, UsersSortingOption usersSortingOption) throws IncorrectPageException {
         List<User> users = new UsersSearchController(usersSortingOption).searchByMonthOfBirth(limit, offset, monthToSearch);
         System.out.println("Users with month of birth " + monthToSearch + " found:");
         users.forEach((a) -> System.out.println(a.getFirstName() + " "
@@ -178,7 +179,7 @@ public class UsersSearchInDateOfBirthMenu extends UserMenu {
     private static void searchInYearOfBirth() {
         System.out.println("Enter year of birth to search");
         int yearToSearch = getIntToSearch();
-        int optionCode = getUsersSortingOption();
+        UsersSortingOption optionCode = getUsersSortingOption();
         try {
             printSearchUsersByYearOfBirthPage(PAGE_SIZE, 0, yearToSearch, optionCode);
         } catch (NoElementsFoundException e) {
@@ -187,7 +188,7 @@ public class UsersSearchInDateOfBirthMenu extends UserMenu {
         }
     }
 
-    private static void printSearchUsersByYearOfBirthPage(int limit, int offset, int yearToSearch, int usersSortingOption) {
+    private static void printSearchUsersByYearOfBirthPage(int limit, int offset, int yearToSearch, UsersSortingOption usersSortingOption) {
         List<User> users = new UsersSearchController(usersSortingOption).searchByYearOfBirth(limit, offset, yearToSearch);
         System.out.println("Users with year of birth " + yearToSearch + " found:");
         users.forEach((a) -> System.out.println(a.getFirstName() + " "
